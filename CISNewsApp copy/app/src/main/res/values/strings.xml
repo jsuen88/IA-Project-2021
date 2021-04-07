@@ -6,4 +6,12 @@
         <item>Teacher</item>
         <item>Admin</item>
     </string-array>
+
+    <string-array name="post_categories">
+        <item>CCA</item>
+        <item>Service</item>
+        <item>Sports</item>
+        <item>Academics</item>
+        <item>Miscellaneous</item>
+    </string-array>
 </resources>

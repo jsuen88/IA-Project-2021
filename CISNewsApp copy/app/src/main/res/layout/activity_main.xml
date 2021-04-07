@@ -7,48 +7,52 @@
     tools:context=".Controllers.MainActivity">
 
     <Button
-        android:id="@+id/button6"
+        android:id="@+id/miscButton"
         android:layout_width="69dp"
         android:layout_height="40dp"
         android:layout_marginStart="330dp"
         android:layout_marginLeft="330dp"
         android:layout_marginTop="130dp"
+        android:onClick="goToMisc"
         android:text="misc"
         android:textSize="10sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/serviceButton"
         android:layout_width="69dp"
         android:layout_height="40dp"
         android:layout_marginStart="249dp"
         android:layout_marginLeft="249dp"
         android:layout_marginTop="130dp"
+        android:onClick="goToService"
         android:text="service"
         android:textSize="10sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/academicsButton"
         android:layout_width="69dp"
         android:layout_height="40dp"
         android:layout_marginStart="172dp"
         android:layout_marginLeft="172dp"
         android:layout_marginTop="130dp"
+        android:onClick="goToAcademics"
         android:text="academics"
         android:textSize="8sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/sportsButton"
         android:layout_width="69dp"
         android:layout_height="40dp"
         android:layout_marginStart="94dp"
         android:layout_marginLeft="94dp"
         android:layout_marginTop="130dp"
+        android:onClick="goToSports"
         android:text="sports"
         android:textSize="10sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,15 +85,43 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/ccaButton"
         android:layout_width="69dp"
         android:layout_height="40dp"
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="130dp"
+        android:onClick="goToCCA"
         android:text="cca"
         android:textSize="10sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/createPostButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="655dp"
+        android:onClick="goToCreatePost"
+        android:text="create post"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mainRecView"
+        android:layout_width="409dp"
+        android:layout_height="483dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/createPostButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/miscButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,8 @@
 package com.example.cisnewsapp.Controllers;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,10 +12,15 @@ import com.example.cisnewsapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
+
+    RecyclerView recView;
+    ArrayList<String> allTheStuff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +29,18 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+
+        recView = findViewById(R.id.mainRecView);
+
+        allTheStuff = new ArrayList();
+        allTheStuff.add("enchanted virus");
+        allTheStuff.add("enchanted virus 2.0");
+        allTheStuff.add("enchanted virus 3.0");
+
+        MainRecAdapter myAdapter = new MainRecAdapter(allTheStuff);
+        recView.setAdapter(myAdapter);
+
+        recView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     public void signOut (View v)
@@ -30,5 +49,35 @@ public class MainActivity extends AppCompatActivity {
         Intent nextScreen = new Intent(getBaseContext(), AuthActivity.class);
         startActivity(nextScreen);
         finish();
+    }
+
+    public void goToCCA (View v) {
+        Intent nextScreen = new Intent(getBaseContext(), CCAActivity.class);
+        startActivity(nextScreen);
+    }
+
+    public void goToService (View v) {
+        Intent nextScreen = new Intent(getBaseContext(), ServiceActivity.class);
+        startActivity(nextScreen);
+    }
+
+    public void goToSports (View v) {
+        Intent nextScreen = new Intent(getBaseContext(), SportsActivity.class);
+        startActivity(nextScreen);
+    }
+
+    public void goToAcademics (View v) {
+        Intent nextScreen = new Intent(getBaseContext(), AcademicsActivity.class);
+        startActivity(nextScreen);
+    }
+
+    public void goToMisc (View v) {
+        Intent nextScreen = new Intent(getBaseContext(), MiscActivity.class);
+        startActivity(nextScreen);
+    }
+
+    public void goToCreatePost (View v) {
+        Intent nextScreen = new Intent(getBaseContext(), NewPostActivity.class);
+        startActivity(nextScreen);
     }
 }
