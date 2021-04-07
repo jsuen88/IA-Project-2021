@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "559337506391",
+    "project_id": "cis-news",
+    "storage_bucket": "cis-news.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559337506391:android:205550e67a5617d219c512",
+        "android_client_info": {
+          "package_name": "com.example.cisnewsapp.Controllers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "559337506391-698nf640oe9gi6icjfelbodbfnr9nect.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApNygwHGOnfGnJ4lJuqtWkhsNnE6sATWU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "559337506391-698nf640oe9gi6icjfelbodbfnr9nect.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
