@@ -3,6 +3,7 @@ package com.example.cisnewsapp.Controllers;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -44,9 +45,12 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
 
+        mAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
+
         Spinner spinner = findViewById(R.id.rolespinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.user_types, android.R.layout.simple_spinner_item);
+                R.array.post_categories, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
@@ -83,6 +87,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                     {
                         if (postCategory.equals("CCA")) {
                             CCAPost post = new CCAPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString());
+
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Service")) {
@@ -123,5 +128,18 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    public void cancel (View v) {
+        Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
+        startActivity(nextScreen);
+    }
+
+    public void signOut (View v)
+    {
+        mAuth.signOut();
+        Intent nextScreen = new Intent(getBaseContext(), AuthActivity.class);
+        startActivity(nextScreen);
+        finish();
     }
 }

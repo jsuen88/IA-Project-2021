@@ -1,5 +1,6 @@
 package com.example.cisnewsapp.Controllers;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
@@ -7,17 +8,20 @@ import android.view.LayoutInflater;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cisnewsapp.Models.Post;
 import com.example.cisnewsapp.R;
 
 import java.util.ArrayList;
 
 public class MainRecAdapter extends RecyclerView.Adapter<MainViewHolder> {
 
-    ArrayList<String> mData;
+    ArrayList<Post> mData;
+    private Context context;
 
-    public MainRecAdapter(ArrayList data)
+    public MainRecAdapter(ArrayList data, Context context)
     {
-        mData = data;
+        this.mData = data;
+        this.context = context;
     }
     @NonNull
     @Override
@@ -28,9 +32,9 @@ public class MainRecAdapter extends RecyclerView.Adapter<MainViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
-        holder.titleText.setText(mData.get(position));
-        holder.authorText.setText("bill");
+    public void onBindViewHolder(@NonNull MainViewHolder holder, final int position) {
+        holder.titleText.setText(mData.get(position).getPostName());
+        holder.authorText.setText(mData.get(position).getPostCreator());
     }
 
     @Override
