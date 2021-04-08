@@ -78,7 +78,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                     DocumentSnapshot ds = task.getResult();
                     User user = ds.toObject(User.class);
                     String owner = user.getName();
-                    String title = editInfo.getText().toString();
+                    String title = editPostName.getText().toString();
                     String info = editInfo.getText().toString();
                     String postCategory = mySpinner.getSelectedItem().toString();
                     ArrayList<Integer> yearGroups = new ArrayList();
