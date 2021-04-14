@@ -61,6 +61,10 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
         extraEdit2 = findViewById(R.id.extraEdit2);
         extraEdit3 = findViewById(R.id.extraEdit3);
         mySpinner = findViewById(R.id.rolespinner);
+
+        extraEdit1.setVisibility(View.GONE);
+        extraEdit2.setVisibility(View.GONE);
+        extraEdit3.setVisibility(View.INVISIBLE);
     }
 
     public boolean inputValid()
@@ -123,11 +127,48 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         String text = adapterView.getItemAtPosition(i).toString();
         Toast.makeText(adapterView.getContext(), text, Toast.LENGTH_SHORT).show();
+
+        String postCategory = mySpinner.getSelectedItem().toString();
+        if (postCategory.equals("CCA")) {
+            extraEdit1.setVisibility(View.VISIBLE);
+            extraEdit1.setHint("Enter year groups: ");
+            extraEdit2.setVisibility(View.VISIBLE);
+            extraEdit2.setHint("Enter day: ");
+            extraEdit3.setVisibility(View.INVISIBLE);
+        }
+        if (postCategory.equals("Service")) {
+            extraEdit1.setVisibility(View.VISIBLE);
+            extraEdit1.setHint("Is cantonese required (yes/no): ");
+            extraEdit2.setVisibility(View.VISIBLE);
+            extraEdit2.setHint("Enter target demographic: ");
+            extraEdit3.setVisibility(View.INVISIBLE);
+        }
+        if (postCategory.equals("Sports")) {
+            extraEdit1.setVisibility(View.VISIBLE);
+            extraEdit1.setHint("Enter year groups: ");
+            extraEdit2.setVisibility(View.VISIBLE);
+            extraEdit2.setHint("Enter sport: ");
+            extraEdit3.setVisibility(View.VISIBLE);
+            extraEdit3.setHint("Enter ability level: ");
+        }
+        if (postCategory.equals("Academics")) {
+            extraEdit1.setVisibility(View.VISIBLE);
+            extraEdit1.setHint("Enter year groups: ");
+            extraEdit2.setVisibility(View.GONE);
+            extraEdit3.setVisibility(View.INVISIBLE);
+        }
+        if (postCategory.equals("Miscellaneous")) {
+            extraEdit1.setVisibility(View.INVISIBLE);
+            extraEdit2.setVisibility(View.GONE);
+            extraEdit3.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-
+        extraEdit1.setVisibility(View.INVISIBLE);
+        extraEdit2.setVisibility(View.GONE);
+        extraEdit3.setVisibility(View.INVISIBLE);
     }
 
     public void cancel (View v) {
