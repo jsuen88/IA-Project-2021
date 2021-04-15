@@ -28,6 +28,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class NewPostActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -85,12 +86,13 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                     String title = editPostName.getText().toString();
                     String info = editInfo.getText().toString();
                     String postCategory = mySpinner.getSelectedItem().toString();
+                    String id = UUID.randomUUID().toString();
                     ArrayList<Integer> yearGroups = new ArrayList();
                     boolean cantonese = false;
                     if (inputValid())
                     {
                         if (postCategory.equals("CCA")) {
-                            CCAPost post = new CCAPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString());
+                            CCAPost post = new CCAPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString(), id);
 
                             firestore.collection("Posts").document(title).set(post);
                         }
@@ -98,25 +100,28 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             if (extraEdit1.getText().toString().equals("yes")) {
                                 cantonese = true;
                             }
-                            ServicePost post = new ServicePost(title, postCategory, owner, info, "post date here", "lasts until here", cantonese, extraEdit2.getText().toString());
+                            ServicePost post = new ServicePost(title, postCategory, owner, info, "post date here", "lasts until here", cantonese, extraEdit2.getText().toString(), id);
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Sports")) {
-                            SportsPost post = new SportsPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString());
+                            SportsPost post = new SportsPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString(), id);
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Academics")) {
-                            AcademicsPost post = new AcademicsPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups);
+                            AcademicsPost post = new AcademicsPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, id);
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Miscellaneous")) {
-                            Post post = new Post(title, postCategory, owner, info, "post date here", "lasts until here");
+                            Post post = new Post(title, postCategory, owner, info, "post date here", "lasts until here", id);
                             firestore.collection("Posts").document(title).set(post);
                         }
                         ArrayList<String> createdPosts = user.getCreatedPosts();
                         createdPosts.add(title);
                         user.setCreatedPosts(createdPosts);
                         firestore.collection("users").document(user.getUid()).set(user);
+
+                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                        startActivity(intent);
                     }
                 }
             }

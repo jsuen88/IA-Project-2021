@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class AuthActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
@@ -33,6 +34,7 @@ public class AuthActivity extends AppCompatActivity implements AdapterView.OnIte
     private EditText passwordField;
     private EditText nameField;
     public ArrayList<String> posts = new ArrayList<>();
+    public ArrayList<String> seenPosts = new ArrayList<>();
     private Spinner usersSpinner;
 
     @Override
@@ -138,7 +140,7 @@ public class AuthActivity extends AppCompatActivity implements AdapterView.OnIte
                                 String userUID = mUser.getUid();
 
                                 User currentUser = new User(nameString, userUID,
-                                        usersSpinner.getSelectedItem().toString(), emailString, 0, posts);
+                                        usersSpinner.getSelectedItem().toString(), emailString, 0, posts, seenPosts);
                                 firestore.collection("users").document(userUID).set(currentUser);
                                 updateUI(mUser);
                             }

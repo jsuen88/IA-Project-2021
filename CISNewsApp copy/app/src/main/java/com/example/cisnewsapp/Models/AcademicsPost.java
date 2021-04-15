@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class AcademicsPost extends Post{
     ArrayList<Integer> yearGroups;
 
-    public AcademicsPost(String postName, String postCategory, String postCreator, String info, String postDate, String lastsUntil, ArrayList<Integer> yearGroups) {
-        super(postName, postCategory, postCreator, info, postDate, lastsUntil);
+    public AcademicsPost(String postName, String postCategory, String postCreator, String info, String postDate, String lastsUntil, ArrayList<Integer> yearGroups, String id) {
+        super(postName, postCategory, postCreator, info, postDate, lastsUntil, id);
         this.yearGroups = yearGroups;
     }
 

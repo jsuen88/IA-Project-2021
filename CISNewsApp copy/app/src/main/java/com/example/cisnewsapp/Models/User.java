@@ -9,14 +9,16 @@ public class User {
     private String email;
     private int numPosts;
     ArrayList<String> createdPosts;
+    ArrayList<String> seenPosts;
 
-    public User(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts) {
+    public User(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, ArrayList<String> seenPosts) {
         this.name = name;
         this.uid = uid;
         this.userType = userType;
         this.email = email;
         this.numPosts = numPosts;
         this.createdPosts = createdPosts;
+        this.seenPosts = seenPosts;
     }
 
     public User()
@@ -69,5 +71,13 @@ public class User {
 
     public void setCreatedPosts(ArrayList<String> createdPosts) {
         this.createdPosts = createdPosts;
+    }
+
+    public ArrayList<String> getSeenPosts() {
+        return seenPosts;
+    }
+
+    public void setSeenPosts(ArrayList<String> seenPosts) {
+        this.seenPosts = seenPosts;
     }
 }

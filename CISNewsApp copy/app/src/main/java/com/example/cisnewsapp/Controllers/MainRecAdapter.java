@@ -47,6 +47,7 @@ public class MainRecAdapter extends RecyclerView.Adapter<MainViewHolder> {
                 intent.putExtra("category", mData.get(position).getPostCategory());
                 intent.putExtra("date", mData.get(position).getPostDate());
                 intent.putExtra("info", mData.get(position).getInfo());
+                intent.putExtra("id", mData.get(position).getId());
                 context.startActivity(intent);
             }
         });

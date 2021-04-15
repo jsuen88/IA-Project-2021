@@ -6,8 +6,8 @@ public class Admin extends User {
     private int approvedPosts;
     private int deniedPosts;
 
-    public Admin(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, int approvedPosts, int deniedPosts) {
-        super(name, uid, userType, email, numPosts, createdPosts);
+    public Admin(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, int approvedPosts, int deniedPosts, ArrayList<String> seenPosts) {
+        super(name, uid, userType, email, numPosts, createdPosts, seenPosts);
         this.approvedPosts = approvedPosts;
         this.deniedPosts = deniedPosts;
     }

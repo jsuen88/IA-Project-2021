@@ -7,14 +7,16 @@ public class Post {
     private String info;
     private String postDate;
     private String lastsUntil;
+    private String id;
 
-    public Post(String postName, String postCategory, String postCreator, String info, String postDate, String lastsUntil) {
+    public Post(String postName, String postCategory, String postCreator, String info, String postDate, String lastsUntil, String id) {
         this.postName = postName;
         this.postCategory = postCategory;
         this.postCreator = postCreator;
         this.info = info;
         this.postDate = postDate;
         this.lastsUntil = lastsUntil;
+        this.id = id;
     }
 
     public Post()
@@ -67,5 +69,13 @@ public class Post {
 
     public void setLastsUntil(String lastsUntil) {
         this.lastsUntil = lastsUntil;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

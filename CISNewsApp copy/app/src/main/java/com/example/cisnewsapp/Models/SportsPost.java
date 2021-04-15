@@ -7,8 +7,8 @@ public class SportsPost extends Post {
     private String sport;
     private String level;
 
-    public SportsPost(String postName, String postCategory, String postCreator, String info, String postDate, String lastsUntil, ArrayList<Integer> yearGroups, String sport, String level) {
-        super(postName, postCategory, postCreator, info, postDate, lastsUntil);
+    public SportsPost(String postName, String postCategory, String postCreator, String info, String postDate, String lastsUntil, ArrayList<Integer> yearGroups, String sport, String level, String id) {
+        super(postName, postCategory, postCreator, info, postDate, lastsUntil, id);
         this.yearGroups = yearGroups;
         this.sport = sport;
         this.level = level;
