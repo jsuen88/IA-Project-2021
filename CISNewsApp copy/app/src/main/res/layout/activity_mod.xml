@@ -6,4 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".Controllers.ModActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/adminRecView"
+        android:layout_width="405dp"
+        android:layout_height="460dp"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="107dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

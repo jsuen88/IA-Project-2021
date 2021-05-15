@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.cisnewsapp.Models.Post;
 import com.example.cisnewsapp.Models.User;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
+    private Button adminButton;
 
     RecyclerView recView;
     ArrayList<String> allTheStuff;
@@ -42,11 +44,29 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         recView = findViewById(R.id.mainRecView);
+        adminButton = findViewById(R.id.adminButton);
+        adminButton.setVisibility(View.GONE);
 
         allTheStuff = new ArrayList();
         allTheStuff.add("enchanted virus");
         allTheStuff.add("enchanted virus 2.0");
         allTheStuff.add("enchanted virus 3.0");
+
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        firestore.collection("users").document(mUser.getUid()).get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot ds = task.getResult();
+                            User user = ds.toObject(User.class);
+                            if (String.valueOf(user.getUserType()).equals("Admin"))
+                            {
+                                adminButton.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                });
     }
 
     public void getAndPopulateData()
@@ -129,6 +149,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToCreatePost (View v) {
         Intent nextScreen = new Intent(getBaseContext(), NewPostActivity.class);
+        startActivity(nextScreen);
+    }
+
+    public void goToAdmin (View v) {
+        Intent nextScreen = new Intent(getBaseContext(), ModActivity.class);
         startActivity(nextScreen);
     }
 }
