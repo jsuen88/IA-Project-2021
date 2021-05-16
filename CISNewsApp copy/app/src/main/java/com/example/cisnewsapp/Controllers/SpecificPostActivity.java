@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.cisnewsapp.Models.Post;
 import com.example.cisnewsapp.Models.User;
 import com.example.cisnewsapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,6 +33,11 @@ public class SpecificPostActivity extends AppCompatActivity {
     private TextView infoView;
     private Button signOut;
     private Button goBack;
+    private Button seenPost;
+    private Button approveButton;
+    private Button rejectButton;
+    private Button submitReject;
+    private EditText rejectEditText;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
@@ -41,6 +48,7 @@ public class SpecificPostActivity extends AppCompatActivity {
     private String date;
     private String info;
     private String id;
+    private String approvalStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +65,16 @@ public class SpecificPostActivity extends AppCompatActivity {
         infoView = findViewById(R.id.infoView);
         goBack = findViewById(R.id.goBack);
         signOut = findViewById(R.id.signOut);
+        seenPost = findViewById(R.id.seenPost);
+        approveButton = findViewById(R.id.approveButton);
+        rejectButton = findViewById(R.id.rejectButton);
+        rejectEditText = findViewById(R.id.rejectEditText);
+        submitReject = findViewById(R.id.submitRejection);
 
+        approveButton.setVisibility(View.INVISIBLE);
+        rejectButton.setVisibility(View.INVISIBLE);
+        rejectEditText.setVisibility(View.INVISIBLE);
+        submitReject.setVisibility(View.INVISIBLE);
 
         title = getIntent().getStringExtra("title");
         author = getIntent().getStringExtra("author");
@@ -65,12 +82,34 @@ public class SpecificPostActivity extends AppCompatActivity {
         date = getIntent().getStringExtra("date");
         info = getIntent().getStringExtra("info");
         id = getIntent().getStringExtra("id");
+        approvalStatus = getIntent().getStringExtra("approval");
 
         this.titleView.setText(title);
         this.authorView.setText("Author : " + author);
         this.categoryView.setText("Category : " + category);
         this.dateView.setText("Date : " + date);
         this.infoView.setText("Info : " + info);
+
+        setUpButtons();
+    }
+
+    public void setUpButtons()
+    {
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        firestore.collection("users").document(mUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot ds = task.getResult();
+                    User user = ds.toObject(User.class);
+                    if (String.valueOf(user.getUserType()).equals("Admin") && approvalStatus.equals("awaiting")) {
+                        approveButton.setVisibility(View.VISIBLE);
+                        rejectButton.setVisibility(View.VISIBLE);
+                        seenPost.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        });
     }
 
     public void backToMain (View v) {
@@ -93,6 +132,41 @@ public class SpecificPostActivity extends AppCompatActivity {
 
                     Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
                     startActivity(nextScreen);
+                }
+            }
+        });
+    }
+
+    public void approve(View v) {
+        firestore.collection("Posts").document(title).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot ds = task.getResult();
+                    Post post = ds.toObject(Post.class);
+                    post.setApprovalStatus("approved");
+
+                    firestore.collection("Posts").document(title).set(post);
+                    Intent intent = new Intent(getBaseContext(), ModActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+    }
+
+    public void reject(View v) {
+        rejectEditText.setVisibility(View.VISIBLE);
+        submitReject.setVisibility(View.VISIBLE);
+        firestore.collection("Posts").document(title).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot ds = task.getResult();
+                    Post post = ds.toObject(Post.class);
+                    post.setApprovalStatus("rejected");
+
+                    firestore.collection("Posts").document(title).set(post);
+
                 }
             }
         });

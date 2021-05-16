@@ -8,8 +8,9 @@ public class Post {
     private String postDate;
     private String lastsUntil;
     private String id;
+    private String approvalStatus;
 
-    public Post(String postName, String postCategory, String postCreator, String info, String postDate, String lastsUntil, String id) {
+    public Post(String postName, String postCategory, String postCreator, String info, String postDate, String lastsUntil, String id, String approvalStatus) {
         this.postName = postName;
         this.postCategory = postCategory;
         this.postCreator = postCreator;
@@ -17,6 +18,7 @@ public class Post {
         this.postDate = postDate;
         this.lastsUntil = lastsUntil;
         this.id = id;
+        this.approvalStatus = approvalStatus;
     }
 
     public Post()
@@ -77,5 +79,13 @@ public class Post {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public void setApprovalStatus(String approvalStatus) {
+        this.approvalStatus = approvalStatus;
     }
 }

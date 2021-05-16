@@ -91,13 +91,9 @@ public class MainActivity extends AppCompatActivity {
                 for (DocumentSnapshot ds : task.getResult().getDocuments())
                 {
                     Post post = ds.toObject(Post.class);
-                    tempPost.add(post);
-                }
-                for (int i = 0; i < tempPost.size(); i++)
-                {
-                    if (seenPosts.contains(tempPost.get(i).getId()))
+                    if (!seenPosts.contains(post.getId()) && post.getApprovalStatus().equals("approved"))
                     {
-                        tempPost.remove(i);
+                        tempPost.add(post);
                     }
                 }
                 help(tempPost);

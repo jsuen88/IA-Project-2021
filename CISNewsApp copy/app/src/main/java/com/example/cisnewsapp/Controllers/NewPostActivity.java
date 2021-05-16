@@ -92,7 +92,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                     if (inputValid())
                     {
                         if (postCategory.equals("CCA")) {
-                            CCAPost post = new CCAPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString(), id);
+                            CCAPost post = new CCAPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString(), id, "awaiting");
 
                             firestore.collection("Posts").document(title).set(post);
                         }
@@ -100,19 +100,19 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             if (extraEdit1.getText().toString().equals("yes")) {
                                 cantonese = true;
                             }
-                            ServicePost post = new ServicePost(title, postCategory, owner, info, "post date here", "lasts until here", cantonese, extraEdit2.getText().toString(), id);
+                            ServicePost post = new ServicePost(title, postCategory, owner, info, "post date here", "lasts until here", cantonese, extraEdit2.getText().toString(), id, "awaiting");
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Sports")) {
-                            SportsPost post = new SportsPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString(), id);
+                            SportsPost post = new SportsPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString(), id, "awaiting");
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Academics")) {
-                            AcademicsPost post = new AcademicsPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, id);
+                            AcademicsPost post = new AcademicsPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, id, "awaiting");
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Miscellaneous")) {
-                            Post post = new Post(title, postCategory, owner, info, "post date here", "lasts until here", id);
+                            Post post = new Post(title, postCategory, owner, info, "post date here", "lasts until here", id, "awaiting");
                             firestore.collection("Posts").document(title).set(post);
                         }
                         ArrayList<String> createdPosts = user.getCreatedPosts();
