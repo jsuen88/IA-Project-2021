@@ -140,7 +140,7 @@ public class AuthActivity extends AppCompatActivity implements AdapterView.OnIte
                                 String userUID = mUser.getUid();
 
                                 User currentUser = new User(nameString, userUID,
-                                        usersSpinner.getSelectedItem().toString(), emailString, 0, posts, seenPosts);
+                                        usersSpinner.getSelectedItem().toString(), emailString, 0, posts, seenPosts, "All");
                                 firestore.collection("users").document(userUID).set(currentUser);
                                 updateUI(mUser);
                             }

@@ -1,5 +1,6 @@
 package com.example.cisnewsapp.Models;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class User {
@@ -10,8 +11,9 @@ public class User {
     private int numPosts;
     ArrayList<String> createdPosts;
     ArrayList<String> seenPosts;
+    String currentlyViewing;
 
-    public User(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, ArrayList<String> seenPosts) {
+    public User(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, ArrayList<String> seenPosts, String currentlyViewing) {
         this.name = name;
         this.uid = uid;
         this.userType = userType;
@@ -19,6 +21,7 @@ public class User {
         this.numPosts = numPosts;
         this.createdPosts = createdPosts;
         this.seenPosts = seenPosts;
+        this.currentlyViewing = currentlyViewing;
     }
 
     public User()
@@ -79,5 +82,13 @@ public class User {
 
     public void setSeenPosts(ArrayList<String> seenPosts) {
         this.seenPosts = seenPosts;
+    }
+
+    public String getCurrentlyViewing() {
+        return currentlyViewing;
+    }
+
+    public void setCurrentlyViewing(String currentlyViewing) {
+        this.currentlyViewing = currentlyViewing;
     }
 }

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class Student extends User{
     private String yearGroup;
 
-    public Student(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, String yearGroup, ArrayList<String> seenPosts) {
-        super(name, uid, userType, email, numPosts, createdPosts, seenPosts);
+    public Student(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, String yearGroup, ArrayList<String> seenPosts, String currentlyViewing) {
+        super(name, uid, userType, email, numPosts, createdPosts, seenPosts, currentlyViewing);
         this.yearGroup = yearGroup;
     }
 

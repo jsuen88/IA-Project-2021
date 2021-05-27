@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.example.cisnewsapp.Models.Post;
 import com.example.cisnewsapp.Models.User;
@@ -28,9 +30,11 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
     private Button adminButton;
+    private TextView currentlyViewingText;
 
     RecyclerView recView;
     ArrayList<String> allTheStuff;
+    String currentlyViewing;
 
     ArrayList<Post> posts = new ArrayList<>();
     ArrayList<String> seenPosts = new ArrayList<>();
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         recView = findViewById(R.id.mainRecView);
         adminButton = findViewById(R.id.adminButton);
         adminButton.setVisibility(View.GONE);
+        currentlyViewingText = findViewById(R.id.currentlyViewingText);
 
         allTheStuff = new ArrayList();
         allTheStuff.add("enchanted virus");
@@ -64,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
                             {
                                 adminButton.setVisibility(View.VISIBLE);
                             }
+                            String current = user.getCurrentlyViewing();
+                            currentlyViewingText.setText("You are currently viewing: " + current + " posts");
                         }
                     }
                 });
@@ -81,22 +88,29 @@ public class MainActivity extends AppCompatActivity {
                     DocumentSnapshot ds = task.getResult();
                     User user = ds.toObject(User.class);
                     seenPosts = user.getSeenPosts();
+                    currentlyViewing = user.getCurrentlyViewing();
                 }
             }
         });
         firestore.collection("Posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                final ArrayList<Post> tempPost = new ArrayList<>();
-                for (DocumentSnapshot ds : task.getResult().getDocuments())
+                if (task.isSuccessful())
                 {
-                    Post post = ds.toObject(Post.class);
-                    if (!seenPosts.contains(post.getId()) && post.getApprovalStatus().equals("approved"))
+                    final ArrayList<Post> tempPost = new ArrayList<>();
+                    for (DocumentSnapshot ds : task.getResult().getDocuments())
                     {
-                        tempPost.add(post);
+                        Post post = ds.toObject(Post.class);
+                        if (!seenPosts.contains(post.getId())
+                                && post.getApprovalStatus().equals("approved")
+                                && ((post.getPostCategory().equals(currentlyViewing))
+                                || currentlyViewing.equals("All")))
+                        {
+                            tempPost.add(post);
+                        }
                     }
+                    help(tempPost);
                 }
-                help(tempPost);
             }
         });
     }
@@ -119,28 +133,93 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToCCA (View v) {
-        Intent nextScreen = new Intent(getBaseContext(), CCAActivity.class);
-        startActivity(nextScreen);
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        firestore.collection("users").document(mUser.getUid()).get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot ds = task.getResult();
+                            User user = ds.toObject(User.class);
+                            user.setCurrentlyViewing("CCA");
+                            firestore.collection("users").document(user.getUid()).set(user);
+                        }
+                    }
+                });
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     public void goToService (View v) {
-        Intent nextScreen = new Intent(getBaseContext(), ServiceActivity.class);
-        startActivity(nextScreen);
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        firestore.collection("users").document(mUser.getUid()).get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot ds = task.getResult();
+                            User user = ds.toObject(User.class);
+                            user.setCurrentlyViewing("Service");
+                            firestore.collection("users").document(user.getUid()).set(user);
+                        }
+                    }
+                });
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     public void goToSports (View v) {
-        Intent nextScreen = new Intent(getBaseContext(), SportsActivity.class);
-        startActivity(nextScreen);
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        firestore.collection("users").document(mUser.getUid()).get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot ds = task.getResult();
+                            User user = ds.toObject(User.class);
+                            user.setCurrentlyViewing("Sports");
+                            firestore.collection("users").document(user.getUid()).set(user);
+                        }
+                    }
+                });
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     public void goToAcademics (View v) {
-        Intent nextScreen = new Intent(getBaseContext(), AcademicsActivity.class);
-        startActivity(nextScreen);
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        firestore.collection("users").document(mUser.getUid()).get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot ds = task.getResult();
+                            User user = ds.toObject(User.class);
+                            user.setCurrentlyViewing("Academics");
+                            firestore.collection("users").document(user.getUid()).set(user);
+                        }
+                    }
+                });
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     public void goToMisc (View v) {
-        Intent nextScreen = new Intent(getBaseContext(), MiscActivity.class);
-        startActivity(nextScreen);
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        firestore.collection("users").document(mUser.getUid()).get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot ds = task.getResult();
+                            User user = ds.toObject(User.class);
+                            user.setCurrentlyViewing("Miscellaneous");
+                            firestore.collection("users").document(user.getUid()).set(user);
+                        }
+                    }
+                });
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     public void goToCreatePost (View v) {

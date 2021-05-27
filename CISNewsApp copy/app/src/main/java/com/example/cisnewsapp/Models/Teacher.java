@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class Teacher extends User{
     private String subject;
 
-    public Teacher(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, String subject, ArrayList<String> seenPosts) {
-        super(name, uid, userType, email, numPosts, createdPosts, seenPosts);
+    public Teacher(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, String subject, ArrayList<String> seenPosts, String currentlyViewing) {
+        super(name, uid, userType, email, numPosts, createdPosts, seenPosts, currentlyViewing);
         this.subject = subject;
     }
 
