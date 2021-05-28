@@ -35,8 +35,13 @@ public class MainRecAdapter extends RecyclerView.Adapter<MainViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, final int position) {
-        holder.titleText.setText(mData.get(position).getPostName());
-        holder.authorText.setText(mData.get(position).getPostCreator());
+        String substring = mData.get(position).getInfo();
+        if (substring.length() > 100)
+        {
+            substring = substring.substring(0, 100) + "...";
+        }
+        holder.titleText.setText("Post Title: " + mData.get(position).getPostName());
+        holder.authorText.setText("Post Details: " + substring);
 
         holder.getLayout().setOnClickListener(new View.OnClickListener() {
             @Override

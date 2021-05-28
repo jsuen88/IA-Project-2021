@@ -36,8 +36,13 @@ public class ModRecAdapter extends RecyclerView.Adapter<ModViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull ModViewHolder holder, final int position) {
-        holder.titleModView.setText(mData.get(position).getPostName());
-        holder.authorModView.setText(mData.get(position).getPostCreator());
+        String substring = mData.get(position).getInfo();
+        if (substring.length() > 100)
+        {
+            substring = substring.substring(0, 100) + "...";
+        }
+        holder.titleModView.setText("Post Title: " + mData.get(position).getPostName());
+        holder.authorModView.setText("Post Details: " + substring);
 
         holder.getLayout().setOnClickListener(new View.OnClickListener() {
             @Override

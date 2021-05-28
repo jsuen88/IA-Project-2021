@@ -35,6 +35,7 @@ public class AuthActivity extends AppCompatActivity implements AdapterView.OnIte
     private EditText nameField;
     public ArrayList<String> posts = new ArrayList<>();
     public ArrayList<String> seenPosts = new ArrayList<>();
+    public ArrayList<String> starredPosts = new ArrayList<>();
     private Spinner usersSpinner;
 
     @Override
@@ -140,7 +141,7 @@ public class AuthActivity extends AppCompatActivity implements AdapterView.OnIte
                                 String userUID = mUser.getUid();
 
                                 User currentUser = new User(nameString, userUID,
-                                        usersSpinner.getSelectedItem().toString(), emailString, 0, posts, seenPosts, "All");
+                                        usersSpinner.getSelectedItem().toString(), emailString, 0, posts, seenPosts, "All", starredPosts);
                                 firestore.collection("users").document(userUID).set(currentUser);
                                 updateUI(mUser);
                             }

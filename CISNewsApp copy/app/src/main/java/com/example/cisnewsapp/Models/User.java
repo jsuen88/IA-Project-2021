@@ -12,8 +12,9 @@ public class User {
     ArrayList<String> createdPosts;
     ArrayList<String> seenPosts;
     String currentlyViewing;
+    ArrayList<String> starredPosts;
 
-    public User(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, ArrayList<String> seenPosts, String currentlyViewing) {
+    public User(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, ArrayList<String> seenPosts, String currentlyViewing, ArrayList<String> starredPosts) {
         this.name = name;
         this.uid = uid;
         this.userType = userType;
@@ -22,6 +23,7 @@ public class User {
         this.createdPosts = createdPosts;
         this.seenPosts = seenPosts;
         this.currentlyViewing = currentlyViewing;
+        this.starredPosts = starredPosts;
     }
 
     public User()
@@ -90,5 +92,13 @@ public class User {
 
     public void setCurrentlyViewing(String currentlyViewing) {
         this.currentlyViewing = currentlyViewing;
+    }
+
+    public ArrayList<String> getStarredPosts() {
+        return starredPosts;
+    }
+
+    public void setStarredPosts(ArrayList<String> starredPosts) {
+        this.starredPosts = starredPosts;
     }
 }

@@ -34,6 +34,7 @@ public class SpecificPostActivity extends AppCompatActivity {
     private Button signOut;
     private Button goBack;
     private Button seenPost;
+    private Button starButton;
     private Button approveButton;
     private Button rejectButton;
     private Button submitReject;
@@ -66,6 +67,7 @@ public class SpecificPostActivity extends AppCompatActivity {
         goBack = findViewById(R.id.goBack);
         signOut = findViewById(R.id.signOut);
         seenPost = findViewById(R.id.seenPost);
+        starButton = findViewById(R.id.starButton);
         approveButton = findViewById(R.id.approveButton);
         rejectButton = findViewById(R.id.rejectButton);
         rejectEditText = findViewById(R.id.rejectEditText);
@@ -106,6 +108,7 @@ public class SpecificPostActivity extends AppCompatActivity {
                         approveButton.setVisibility(View.VISIBLE);
                         rejectButton.setVisibility(View.VISIBLE);
                         seenPost.setVisibility(View.INVISIBLE);
+                        starButton.setVisibility(View.INVISIBLE);
                     }
                 }
             }
@@ -128,6 +131,26 @@ public class SpecificPostActivity extends AppCompatActivity {
                     ArrayList<String> seenPosts = user.getSeenPosts();
                     seenPosts.add(id);
                     user.setSeenPosts(seenPosts);
+                    firestore.collection("users").document(user.getUid()).set(user);
+
+                    Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
+                    startActivity(nextScreen);
+                }
+            }
+        });
+    }
+
+    public void starPost(View v) {
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        firestore.collection("users").document(mUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot ds = task.getResult();
+                    User user = ds.toObject(User.class);
+                    ArrayList<String> starredPosts = user.getStarredPosts();
+                    starredPosts.add(id);
+                    user.setStarredPosts(starredPosts);
                     firestore.collection("users").document(user.getUid()).set(user);
 
                     Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);

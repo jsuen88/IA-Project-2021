@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.cisnewsapp.Models.Post;
 import com.example.cisnewsapp.R;
@@ -69,5 +71,10 @@ public class ModActivity extends AppCompatActivity {
         ModRecAdapter adapt = new ModRecAdapter(posts, this);
         adminRecView.setAdapter(adapt);
         adminRecView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    public void backMainButton (View v) {
+        Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
+        startActivity(nextScreen);
     }
 }

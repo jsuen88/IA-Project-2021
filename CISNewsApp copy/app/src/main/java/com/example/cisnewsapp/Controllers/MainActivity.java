@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<Post> posts = new ArrayList<>();
     ArrayList<String> seenPosts = new ArrayList<>();
+    ArrayList<String> starredPosts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,22 +59,21 @@ public class MainActivity extends AppCompatActivity {
         allTheStuff.add("enchanted virus 3.0");
 
         FirebaseUser mUser = mAuth.getCurrentUser();
-        firestore.collection("users").document(mUser.getUid()).get().
-                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot ds = task.getResult();
-                            User user = ds.toObject(User.class);
-                            if (String.valueOf(user.getUserType()).equals("Admin"))
-                            {
-                                adminButton.setVisibility(View.VISIBLE);
-                            }
-                            String current = user.getCurrentlyViewing();
-                            currentlyViewingText.setText("You are currently viewing: " + current + " posts");
-                        }
+        firestore.collection("users").document(mUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot ds = task.getResult();
+                    User user = ds.toObject(User.class);
+                    if (String.valueOf(user.getUserType()).equals("Admin"))
+                    {
+                        adminButton.setVisibility(View.VISIBLE);
                     }
-                });
+
+                    currentlyViewingText.setText("You are currently viewing: " + currentlyViewing + " posts");
+                }
+            }
+        });
     }
 
     public void getAndPopulateData()
@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     User user = ds.toObject(User.class);
                     seenPosts = user.getSeenPosts();
                     currentlyViewing = user.getCurrentlyViewing();
+                    starredPosts = user.getStarredPosts();
                 }
             }
         });
@@ -101,12 +102,18 @@ public class MainActivity extends AppCompatActivity {
                     for (DocumentSnapshot ds : task.getResult().getDocuments())
                     {
                         Post post = ds.toObject(Post.class);
-                        if (!seenPosts.contains(post.getId())
-                                && post.getApprovalStatus().equals("approved")
-                                && ((post.getPostCategory().equals(currentlyViewing))
-                                || currentlyViewing.equals("All")))
+                        if (!currentlyViewing.equals("Starred"))
                         {
-                            tempPost.add(post);
+                            if (!seenPosts.contains(post.getId()) && post.getApprovalStatus().equals("approved") && ((post.getPostCategory().equals(currentlyViewing)) || currentlyViewing.equals("All")))
+                            {
+                                tempPost.add(post);
+                            }
+                        }
+                        else {
+                            if (starredPosts.contains(post.getId()))
+                            {
+                                tempPost.add(post);
+                            }
                         }
                     }
                     help(tempPost);
@@ -132,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    public void goToCCA (View v) {
+    public void goToCCA (View v) throws InterruptedException {
         FirebaseUser mUser = mAuth.getCurrentUser();
         firestore.collection("users").document(mUser.getUid()).get().
                 addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -146,11 +153,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+        currentlyViewing = "CCA";
+        Thread.sleep(2000);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    public void goToService (View v) {
+    public void goToService (View v) throws InterruptedException {
         FirebaseUser mUser = mAuth.getCurrentUser();
         firestore.collection("users").document(mUser.getUid()).get().
                 addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -164,11 +173,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+        currentlyViewing = "Service";
+        Thread.sleep(2000);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    public void goToSports (View v) {
+    public void goToSports (View v) throws InterruptedException {
         FirebaseUser mUser = mAuth.getCurrentUser();
         firestore.collection("users").document(mUser.getUid()).get().
                 addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -182,11 +193,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+        currentlyViewing = "Sports";
+        Thread.sleep(2000);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    public void goToAcademics (View v) {
+    public void goToAcademics (View v) throws InterruptedException {
         FirebaseUser mUser = mAuth.getCurrentUser();
         firestore.collection("users").document(mUser.getUid()).get().
                 addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -200,11 +213,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+        currentlyViewing = "Academics";
+        Thread.sleep(2000);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    public void goToMisc (View v) {
+    public void goToMisc (View v) throws InterruptedException {
         FirebaseUser mUser = mAuth.getCurrentUser();
         firestore.collection("users").document(mUser.getUid()).get().
                 addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -218,6 +233,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+        currentlyViewing = "Miscellaneous";
+        Thread.sleep(2000);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
@@ -230,5 +247,25 @@ public class MainActivity extends AppCompatActivity {
     public void goToAdmin (View v) {
         Intent nextScreen = new Intent(getBaseContext(), ModActivity.class);
         startActivity(nextScreen);
+    }
+
+    public void goToStarredPosts(View v) throws InterruptedException {
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        firestore.collection("users").document(mUser.getUid()).get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot ds = task.getResult();
+                            User user = ds.toObject(User.class);
+                            user.setCurrentlyViewing("Starred");
+                            firestore.collection("users").document(user.getUid()).set(user);
+                        }
+                    }
+                });
+        currentlyViewing = "Starred";
+        Thread.sleep(2000);
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }
