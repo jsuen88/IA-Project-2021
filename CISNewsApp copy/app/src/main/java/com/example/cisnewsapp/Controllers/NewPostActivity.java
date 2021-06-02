@@ -68,8 +68,76 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
         extraEdit3.setVisibility(View.INVISIBLE);
     }
 
+    public boolean yearsValid()
+    {
+        for (char c : extraEdit1.getText().toString().toCharArray())
+        {
+            System.out.println((int)c);
+            if (!((int)c > 47 && (int)c < 58 || ((int)c == 32) || (int)c == 44)) {
+                Toast message = Toast.makeText(this, "Please make sure your input for the year groups only contains numbers and spaces", Toast.LENGTH_SHORT);
+                message.show();
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean inputValid()
     {
+        String postCategory = mySpinner.getSelectedItem().toString();
+        if (postCategory.equals("CCA")) {
+            if (extraEdit1.getText().toString().isEmpty() || editInfo.getText().toString().isEmpty() || editPostName.getText().toString().isEmpty() || extraEdit2.getText().toString().isEmpty()) {
+                Toast message = Toast.makeText(this, "Please make sure you've filled in all the input boxes", Toast.LENGTH_SHORT);
+                message.show();
+                return false;
+            }
+            if (!yearsValid())
+            {
+                return false;
+            }
+            String s = extraEdit2.getText().toString();
+            if (!s.equals("Monday") && !s.equals("Tuesday") && !s.equals("Wednesday") && !s.equals("Thursday") &&!s.equals("Friday")) {
+                Toast message = Toast.makeText(this, "Please enter a valid day of the week into the day input box", Toast.LENGTH_SHORT);
+                message.show();
+                return false;
+            }
+        }
+        if (postCategory.equals("Service")) {
+            if (extraEdit1.getText().toString().isEmpty() || editInfo.getText().toString().isEmpty() || editPostName.getText().toString().isEmpty() || extraEdit2.getText().toString().isEmpty()) {
+                Toast message = Toast.makeText(this, "Please make sure you've filled in all the input boxes", Toast.LENGTH_SHORT);
+                message.show();
+                return false;
+            }
+        }
+        if (postCategory.equals("Sports")) {
+            if (extraEdit1.getText().toString().isEmpty() || editInfo.getText().toString().isEmpty() || editPostName.getText().toString().isEmpty() || extraEdit2.getText().toString().isEmpty() || extraEdit3.getText().toString().isEmpty()) {
+                Toast message = Toast.makeText(this, "Please make sure you've filled in all the input boxes", Toast.LENGTH_SHORT);
+                message.show();
+                return false;
+            }
+            if (!yearsValid())
+            {
+                return false;
+            }
+        }
+        if (postCategory.equals("Academics")) {
+            if (extraEdit1.getText().toString().isEmpty() || editInfo.getText().toString().isEmpty() || editPostName.getText().toString().isEmpty()) {
+                Toast message = Toast.makeText(this, "Please make sure you've filled in all the input boxes", Toast.LENGTH_SHORT);
+                message.show();
+                return false;
+            }
+            if (!yearsValid())
+            {
+                return false;
+            }
+        }
+        if (postCategory.equals("Miscellaneous")) {
+            if (editInfo.getText().toString().isEmpty() || editPostName.getText().toString().isEmpty()) {
+                Toast message = Toast.makeText(this, "Please make sure you've filled in all the input boxes", Toast.LENGTH_SHORT);
+                message.show();
+                return false;
+            }
+        }
         return true;
     }
 
@@ -92,8 +160,13 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                     if (inputValid())
                     {
                         if (postCategory.equals("CCA")) {
-                            CCAPost post = new CCAPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString(), id, "awaiting");
+                            String noSpaceStr = extraEdit1.getText().toString().replaceAll("\\s", "");
+                            String[] years = noSpaceStr.split(",");
+                            for (int i = 0; i < years.length; i++) {
+                                yearGroups.add(Integer.parseInt(years[i]));
+                            }
 
+                            CCAPost post = new CCAPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString(), id, "awaiting");
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Service")) {
@@ -104,10 +177,22 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Sports")) {
+                            String noSpaceStr = extraEdit1.getText().toString().replaceAll("\\s", "");
+                            String[] years = noSpaceStr.split(",");
+                            for (int i = 0; i < years.length; i++) {
+                                yearGroups.add(Integer.parseInt(years[i]));
+                            }
+
                             SportsPost post = new SportsPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString(), id, "awaiting");
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Academics")) {
+                            String noSpaceStr = extraEdit1.getText().toString().replaceAll("\\s", "");
+                            String[] years = noSpaceStr.split(",");
+                            for (int i = 0; i < years.length; i++) {
+                                yearGroups.add(Integer.parseInt(years[i]));
+                            }
+
                             AcademicsPost post = new AcademicsPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, id, "awaiting");
                             firestore.collection("Posts").document(title).set(post);
                         }
