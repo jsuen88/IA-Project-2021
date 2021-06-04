@@ -63,4 +63,9 @@ public class MainRecAdapter extends RecyclerView.Adapter<MainViewHolder> {
     public int getItemCount() {
         return mData.size();
     }
+
+    public void filterList(ArrayList<Post> filteredList) {
+        mData = filteredList;
+        notifyDataSetChanged();
+    }
 }

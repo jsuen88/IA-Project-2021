@@ -7,9 +7,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.cisnewsapp.Models.Post;
@@ -31,12 +35,14 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private Button adminButton;
     private TextView currentlyViewingText;
+    private ArrayList<Post> posts = new ArrayList<>();
+    //MainRecAdapter adapt = new MainRecAdapter(posts, this);
+    private MainRecAdapter adapt;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     RecyclerView recView;
-    ArrayList<String> allTheStuff;
     String currentlyViewing;
 
-    ArrayList<Post> posts = new ArrayList<>();
     ArrayList<String> seenPosts = new ArrayList<>();
     ArrayList<String> starredPosts = new ArrayList<>();
 
@@ -46,17 +52,30 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getAndPopulateData();
 
+        EditText editText = findViewById(R.id.searchBar);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+            }
+        });
+
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         recView = findViewById(R.id.mainRecView);
         adminButton = findViewById(R.id.adminButton);
         adminButton.setVisibility(View.GONE);
         currentlyViewingText = findViewById(R.id.currentlyViewingText);
-
-        allTheStuff = new ArrayList();
-        allTheStuff.add("enchanted virus");
-        allTheStuff.add("enchanted virus 2.0");
-        allTheStuff.add("enchanted virus 3.0");
 
         FirebaseUser mUser = mAuth.getCurrentUser();
         firestore.collection("users").document(mUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -74,6 +93,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void filter(String text) {
+        ArrayList<Post> filteredList = new ArrayList<>();
+        for (Post post : posts) {
+            if (post.getPostName().toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(post);
+            }
+        }
+        adapt.filterList(filteredList);
     }
 
     public void getAndPopulateData()
@@ -126,9 +155,12 @@ public class MainActivity extends AppCompatActivity {
     {
         recView = findViewById(R.id.mainRecView);
         posts = post;
-        MainRecAdapter adapt = new MainRecAdapter(posts, this);
+        //MainRecAdapter adapt = new MainRecAdapter(posts, this);
+
+        mLayoutManager = new LinearLayoutManager(this);
+        adapt = new MainRecAdapter(posts, this);
         recView.setAdapter(adapt);
-        recView.setLayoutManager(new LinearLayoutManager(this));
+        recView.setLayoutManager(mLayoutManager);
     }
 
     public void signOut (View v)

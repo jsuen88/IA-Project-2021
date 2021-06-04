@@ -12,7 +12,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="168dp"
         android:layout_marginLeft="168dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="155dp"
         android:onClick="goToSports"
         android:text="sports"
         android:textSize="12sp"
@@ -25,7 +25,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="335dp"
         android:layout_marginLeft="335dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="155dp"
         android:onClick="goToService"
         android:text="service"
         android:textSize="10sp"
@@ -38,7 +38,7 @@
         android:layout_height="38dp"
         android:layout_marginStart="242dp"
         android:layout_marginLeft="242dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="155dp"
         android:onClick="goToMisc"
         android:text="miscellaneous"
         android:textSize="8sp"
@@ -51,7 +51,7 @@
         android:layout_height="36dp"
         android:layout_marginStart="83dp"
         android:layout_marginLeft="83dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="155dp"
         android:onClick="goToAcademics"
         android:text="academics"
         android:textSize="9sp"
@@ -98,14 +98,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mainRecView"
-        android:layout_width="410dp"
-        android:layout_height="423dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginLeft="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginRight="1dp"
+        android:layout_width="372dp"
+        android:layout_height="425dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
         app:layout_constraintBottom_toTopOf="@+id/createPostButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.434"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -120,17 +119,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <SearchView
-        android:id="@+id/searchBar"
-        android:layout_width="206dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="100dp"
-        android:background="#EDC7C7"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group"
         android:layout_width="wrap_content"
@@ -142,7 +130,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="155dp"
         android:onClick="goToCCA"
         android:text="cca"
         app:layout_constraintStart_toStartOf="parent"
@@ -168,6 +156,16 @@
         android:layout_marginTop="660dp"
         android:onClick="goToStarredPosts"
         android:text="starred posts"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/searchBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginLeft="13dp"
+        android:layout_marginTop="103dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
