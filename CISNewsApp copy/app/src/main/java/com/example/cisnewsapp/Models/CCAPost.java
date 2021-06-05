@@ -1,12 +1,14 @@
 package com.example.cisnewsapp.Models;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CCAPost extends Post{
     ArrayList<Integer> yearGroups;
     private String day;
 
-    public CCAPost(String postName, String postCategory, String postCreator, String info, String postDate, String lastsUntil, ArrayList<Integer> yearGroups, String day, String id, String approvalStatus) {
+    public CCAPost(String postName, String postCategory, String postCreator, String info, Date postDate, Date lastsUntil, ArrayList<Integer> yearGroups, String day, String id, String approvalStatus) {
         super(postName, postCategory, postCreator, info, postDate, lastsUntil, id, approvalStatus);
         this.yearGroups = yearGroups;
         this.day = day;

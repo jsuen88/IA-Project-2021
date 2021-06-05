@@ -1,16 +1,19 @@
 package com.example.cisnewsapp.Models;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 public class Post {
     private String postName;
     private String postCategory;
     private String postCreator;
     private String info;
-    private String postDate;
-    private String lastsUntil;
+    private Date postDate;
+    private Date lastsUntil;
     private String id;
     private String approvalStatus;
 
-    public Post(String postName, String postCategory, String postCreator, String info, String postDate, String lastsUntil, String id, String approvalStatus) {
+    public Post(String postName, String postCategory, String postCreator, String info, Date postDate, Date lastsUntil, String id, String approvalStatus) {
         this.postName = postName;
         this.postCategory = postCategory;
         this.postCreator = postCreator;
@@ -57,19 +60,19 @@ public class Post {
         this.info = info;
     }
 
-    public String getPostDate() {
+    public Date getPostDate() {
         return postDate;
     }
 
-    public void setPostDate(String postDate) {
+    public void setPostDate(Date postDate) {
         this.postDate = postDate;
     }
 
-    public String getLastsUntil() {
+    public Date getLastsUntil() {
         return lastsUntil;
     }
 
-    public void setLastsUntil(String lastsUntil) {
+    public void setLastsUntil(Date lastsUntil) {
         this.lastsUntil = lastsUntil;
     }
 

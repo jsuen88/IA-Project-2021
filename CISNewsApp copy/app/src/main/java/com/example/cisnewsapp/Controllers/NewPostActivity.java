@@ -1,15 +1,21 @@
 package com.example.cisnewsapp.Controllers;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cisnewsapp.Models.AcademicsPost;
@@ -27,10 +33,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
-public class NewPostActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class NewPostActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
@@ -40,11 +50,22 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
     public EditText extraEdit2;
     public EditText extraEdit3;
     public Spinner mySpinner;
+    String date;
+    Date today;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
+
+        Button button = (Button) findViewById(R.id.selectDate);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment datePicker = new DatePicker();
+                datePicker.show(getSupportFragmentManager(), "date picker");
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -67,6 +88,19 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
         extraEdit2.setVisibility(View.GONE);
         extraEdit3.setVisibility(View.INVISIBLE);
     }
+
+    @Override
+    public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth)
+    {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        String currentDateString = DateFormat.getDateInstance(DateFormat.FULL).format(c.getTime());
+        TextView dateView = (TextView) findViewById(R.id.dateView);
+        dateView.setText(currentDateString);
+    }
+
 
     public boolean yearsValid()
     {
@@ -145,6 +179,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
     {
         FirebaseUser mUser = mAuth.getCurrentUser();
         firestore.collection("users").document(mUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -166,14 +201,14 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                                 yearGroups.add(Integer.parseInt(years[i]));
                             }
 
-                            CCAPost post = new CCAPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString(), id, "awaiting");
+                            CCAPost post = new CCAPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), null, yearGroups, extraEdit2.getText().toString(), id, "awaiting");
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Service")) {
                             if (extraEdit1.getText().toString().equals("yes")) {
                                 cantonese = true;
                             }
-                            ServicePost post = new ServicePost(title, postCategory, owner, info, "post date here", "lasts until here", cantonese, extraEdit2.getText().toString(), id, "awaiting");
+                            ServicePost post = new ServicePost(title, postCategory, owner, info, Calendar.getInstance().getTime(), null, cantonese, extraEdit2.getText().toString(), id, "awaiting");
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Sports")) {
@@ -183,7 +218,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                                 yearGroups.add(Integer.parseInt(years[i]));
                             }
 
-                            SportsPost post = new SportsPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString(), id, "awaiting");
+                            SportsPost post = new SportsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), null, yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString(), id, "awaiting");
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Academics")) {
@@ -193,11 +228,11 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                                 yearGroups.add(Integer.parseInt(years[i]));
                             }
 
-                            AcademicsPost post = new AcademicsPost(title, postCategory, owner, info, "post date here", "lasts until here", yearGroups, id, "awaiting");
+                            AcademicsPost post = new AcademicsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), null, yearGroups, id, "awaiting");
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Miscellaneous")) {
-                            Post post = new Post(title, postCategory, owner, info, "post date here", "lasts until here", id, "awaiting");
+                            Post post = new Post(title, postCategory, owner, info, Calendar.getInstance().getTime(), null, id, "awaiting");
                             firestore.collection("Posts").document(title).set(post);
                         }
                         ArrayList<String> createdPosts = user.getCreatedPosts();

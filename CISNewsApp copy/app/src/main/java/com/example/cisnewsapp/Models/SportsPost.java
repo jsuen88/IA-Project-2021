@@ -1,13 +1,15 @@
 package com.example.cisnewsapp.Models;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class SportsPost extends Post {
     ArrayList<Integer> yearGroups;
     private String sport;
     private String level;
 
-    public SportsPost(String postName, String postCategory, String postCreator, String info, String postDate, String lastsUntil, ArrayList<Integer> yearGroups, String sport, String level, String id, String approvalStatus) {
+    public SportsPost(String postName, String postCategory, String postCreator, String info, Date postDate, Date lastsUntil, ArrayList<Integer> yearGroups, String sport, String level, String id, String approvalStatus) {
         super(postName, postCategory, postCreator, info, postDate, lastsUntil, id, approvalStatus);
         this.yearGroups = yearGroups;
         this.sport = sport;
