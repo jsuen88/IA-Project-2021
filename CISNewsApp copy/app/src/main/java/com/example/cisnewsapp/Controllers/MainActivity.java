@@ -28,6 +28,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -133,7 +135,10 @@ public class MainActivity extends AppCompatActivity {
                         Post post = ds.toObject(Post.class);
                         if (!currentlyViewing.equals("Starred"))
                         {
-                            if (!seenPosts.contains(post.getId()) && post.getApprovalStatus().equals("approved") && ((post.getPostCategory().equals(currentlyViewing)) || currentlyViewing.equals("All")))
+                            Date d = Calendar.getInstance().getTime();
+                            if (!seenPosts.contains(post.getId()) && post.getApprovalStatus().equals("approved")
+                                    && ((post.getPostCategory().equals(currentlyViewing)) || currentlyViewing.equals("All"))
+                                    && (post.getPostDate().after(d)) && post.getLastsUntil().before(d))
                             {
                                 tempPost.add(post);
                             }

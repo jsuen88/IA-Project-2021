@@ -50,8 +50,9 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
     public EditText extraEdit2;
     public EditText extraEdit3;
     public Spinner mySpinner;
-    String date;
-    Date today;
+    Date dateEnd;
+    String currentDateString;
+    Calendar c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +93,14 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
     @Override
     public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth)
     {
-        Calendar c = Calendar.getInstance();
+        c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String currentDateString = DateFormat.getDateInstance(DateFormat.FULL).format(c.getTime());
+        c.set(Calendar.HOUR_OF_DAY, 7);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        currentDateString = DateFormat.getDateInstance(DateFormat.FULL).format(c.getTime());
         TextView dateView = (TextView) findViewById(R.id.dateView);
         dateView.setText(currentDateString);
     }
@@ -200,17 +204,44 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             for (int i = 0; i < years.length; i++) {
                                 yearGroups.add(Integer.parseInt(years[i]));
                             }
-
-                            CCAPost post = new CCAPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), null, yearGroups, extraEdit2.getText().toString(), id, "awaiting");
+                            CCAPost post = new CCAPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, extraEdit2.getText().toString(), id, "awaiting");
+                            if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
+                            {
+                                post.setApprovalStatus("Approved");
+                                Calendar cal = Calendar.getInstance();
+                                Date date = post.getPostDate();
+                                cal.setTime(date);
+                                cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
+                                cal.set(Calendar.HOUR_OF_DAY, 7);
+                                cal.set(Calendar.MINUTE, 0);
+                                cal.set(Calendar.SECOND, 0);
+                                date = cal.getTime();
+                                post.setPostDate(date);
+                            }
                             firestore.collection("Posts").document(title).set(post);
                         }
+
                         if (postCategory.equals("Service")) {
                             if (extraEdit1.getText().toString().equals("yes")) {
                                 cantonese = true;
                             }
-                            ServicePost post = new ServicePost(title, postCategory, owner, info, Calendar.getInstance().getTime(), null, cantonese, extraEdit2.getText().toString(), id, "awaiting");
+                            ServicePost post = new ServicePost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), cantonese, extraEdit2.getText().toString(), id, "awaiting");
+                            if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
+                            {
+                                post.setApprovalStatus("Approved");
+                                Calendar cal = Calendar.getInstance();
+                                Date date = post.getPostDate();
+                                cal.setTime(date);
+                                cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
+                                cal.set(Calendar.HOUR_OF_DAY, 7);
+                                cal.set(Calendar.MINUTE, 0);
+                                cal.set(Calendar.SECOND, 0);
+                                date = cal.getTime();
+                                post.setPostDate(date);
+                            }
                             firestore.collection("Posts").document(title).set(post);
                         }
+
                         if (postCategory.equals("Sports")) {
                             String noSpaceStr = extraEdit1.getText().toString().replaceAll("\\s", "");
                             String[] years = noSpaceStr.split(",");
@@ -218,7 +249,20 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                                 yearGroups.add(Integer.parseInt(years[i]));
                             }
 
-                            SportsPost post = new SportsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), null, yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString(), id, "awaiting");
+                            SportsPost post = new SportsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString(), id, "awaiting");
+                            if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
+                            {
+                                post.setApprovalStatus("Approved");
+                                Calendar cal = Calendar.getInstance();
+                                Date date = post.getPostDate();
+                                cal.setTime(date);
+                                cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
+                                cal.set(Calendar.HOUR_OF_DAY, 7);
+                                cal.set(Calendar.MINUTE, 0);
+                                cal.set(Calendar.SECOND, 0);
+                                date = cal.getTime();
+                                post.setPostDate(date);
+                            }
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Academics")) {
@@ -228,11 +272,37 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                                 yearGroups.add(Integer.parseInt(years[i]));
                             }
 
-                            AcademicsPost post = new AcademicsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), null, yearGroups, id, "awaiting");
+                            AcademicsPost post = new AcademicsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, id, "awaiting");
+                            if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
+                            {
+                                post.setApprovalStatus("Approved");
+                                Calendar cal = Calendar.getInstance();
+                                Date date = post.getPostDate();
+                                cal.setTime(date);
+                                cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
+                                cal.set(Calendar.HOUR_OF_DAY, 7);
+                                cal.set(Calendar.MINUTE, 0);
+                                cal.set(Calendar.SECOND, 0);
+                                date = cal.getTime();
+                                post.setPostDate(date);
+                            }
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Miscellaneous")) {
-                            Post post = new Post(title, postCategory, owner, info, Calendar.getInstance().getTime(), null, id, "awaiting");
+                            Post post = new Post(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), id, "awaiting");
+                            if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
+                            {
+                                post.setApprovalStatus("Approved");
+                                Calendar cal = Calendar.getInstance();
+                                Date date = post.getPostDate();
+                                cal.setTime(date);
+                                cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
+                                cal.set(Calendar.HOUR_OF_DAY, 7);
+                                cal.set(Calendar.MINUTE, 0);
+                                cal.set(Calendar.SECOND, 0);
+                                date = cal.getTime();
+                                post.setPostDate(date);
+                            }
                             firestore.collection("Posts").document(title).set(post);
                         }
                         ArrayList<String> createdPosts = user.getCreatedPosts();

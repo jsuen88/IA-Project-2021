@@ -23,6 +23,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class SpecificPostActivity extends AppCompatActivity {
 
@@ -168,6 +170,16 @@ public class SpecificPostActivity extends AppCompatActivity {
                     DocumentSnapshot ds = task.getResult();
                     Post post = ds.toObject(Post.class);
                     post.setApprovalStatus("approved");
+
+                    Date date = post.getPostDate();
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(date);
+                    cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
+                    cal.set(Calendar.HOUR_OF_DAY, 7);
+                    cal.set(Calendar.MINUTE, 0);
+                    cal.set(Calendar.SECOND, 0);
+                    date = cal.getTime();
+                    post.setPostDate(date);
 
                     firestore.collection("Posts").document(title).set(post);
                     Intent intent = new Intent(getBaseContext(), ModActivity.class);
