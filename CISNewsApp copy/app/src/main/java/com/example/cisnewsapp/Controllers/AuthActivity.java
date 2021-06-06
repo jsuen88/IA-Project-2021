@@ -24,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class AuthActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
@@ -141,7 +142,7 @@ public class AuthActivity extends AppCompatActivity implements AdapterView.OnIte
                                 String userUID = mUser.getUid();
 
                                 User currentUser = new User(nameString, userUID,
-                                        usersSpinner.getSelectedItem().toString(), emailString, 0, posts, seenPosts, "All", starredPosts);
+                                        usersSpinner.getSelectedItem().toString(), emailString, 0, posts, seenPosts, "All", starredPosts, Calendar.getInstance().getTime(), 1, 1);
                                 firestore.collection("users").document(userUID).set(currentUser);
                                 updateUI(mUser);
                             }

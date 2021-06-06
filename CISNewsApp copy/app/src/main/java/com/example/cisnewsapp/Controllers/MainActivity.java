@@ -29,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getAndPopulateData();
+        updateStreak();
 
         EditText editText = findViewById(R.id.searchBar);
         editText.addTextChangedListener(new TextWatcher() {
@@ -92,6 +94,47 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     currentlyViewingText.setText("You are currently viewing: " + currentlyViewing + " posts");
+                }
+            }
+        });
+    }
+
+    public void updateStreak()
+    {
+        mAuth = FirebaseAuth.getInstance();
+        final FirebaseUser mUser = mAuth.getCurrentUser();
+        firestore = FirebaseFirestore.getInstance();
+        firestore.collection("users").document(mUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot ds = task.getResult();
+                    User user = ds.toObject(User.class);
+                    Date lastVisit = user.getLastVisit();
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(lastVisit);
+                    int streak = user.getCurrentStreak();
+
+                    System.out.println(cal.get((Calendar.MINUTE))+1);
+                    System.out.println(Calendar.getInstance().get(Calendar.MINUTE));
+                    if (cal.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH) &&
+                            cal.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                            cal.get(Calendar.MINUTE)+1 == Calendar.getInstance().get(Calendar.MINUTE)) {
+                        streak+=1;
+                        if (streak > user.getLongestStreak())
+                        {
+                            user.setLongestStreak(streak);
+                        }
+                        user.setCurrentStreak(streak);
+                    }
+                    else if (!(cal.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH) &&
+                            cal.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                            cal.get(Calendar.MINUTE) == Calendar.getInstance().get(Calendar.MINUTE))) {
+                        streak = 0;
+                        user.setCurrentStreak(streak);
+                    }
+                    user.setLastVisit(Calendar.getInstance().getTime());
+                    firestore.collection("users").document(user.getUid()).set(user);
                 }
             }
         });
@@ -138,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                             Date d = Calendar.getInstance().getTime();
                             if (!seenPosts.contains(post.getId()) && post.getApprovalStatus().equals("approved")
                                     && ((post.getPostCategory().equals(currentlyViewing)) || currentlyViewing.equals("All"))
-                                    && (post.getPostDate().after(d)) && post.getLastsUntil().before(d))
+                                    && (post.getPostDate().before(d)) && post.getLastsUntil().after(d))
                             {
                                 tempPost.add(post);
                             }
@@ -147,6 +190,16 @@ public class MainActivity extends AppCompatActivity {
                             if (starredPosts.contains(post.getId()))
                             {
                                 tempPost.add(post);
+                            }
+                        }
+                        for (int i = 1; i < tempPost.size(); i++) {
+                            int z = i;
+                            while (z > 0 && tempPost.get(i-1).getPostDate().before(tempPost.get(i).getPostDate())) {
+                                //Post p = tempPost.get(i-1);
+                                //tempPost.set(i-1, tempPost.get(i));
+                                //tempPost.set(i, p);
+                                Collections.swap(tempPost, i-1, i);
+                                z -= 1;
                             }
                         }
                     }
@@ -283,6 +336,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToAdmin (View v) {
         Intent nextScreen = new Intent(getBaseContext(), ModActivity.class);
+        startActivity(nextScreen);
+    }
+
+    public void goToHome (View v) {
+        Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
         startActivity(nextScreen);
     }
 

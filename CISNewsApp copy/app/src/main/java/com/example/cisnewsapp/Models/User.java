@@ -2,6 +2,7 @@ package com.example.cisnewsapp.Models;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class User {
     private String name;
@@ -13,8 +14,11 @@ public class User {
     ArrayList<String> seenPosts;
     String currentlyViewing;
     ArrayList<String> starredPosts;
+    Date lastVisit;
+    int currentStreak;
+    int longestStreak;
 
-    public User(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, ArrayList<String> seenPosts, String currentlyViewing, ArrayList<String> starredPosts) {
+    public User(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, ArrayList<String> seenPosts, String currentlyViewing, ArrayList<String> starredPosts, Date lastVisit, int currentStreak, int longestStreak) {
         this.name = name;
         this.uid = uid;
         this.userType = userType;
@@ -24,6 +28,9 @@ public class User {
         this.seenPosts = seenPosts;
         this.currentlyViewing = currentlyViewing;
         this.starredPosts = starredPosts;
+        this.lastVisit = lastVisit;
+        this.currentStreak = currentStreak;
+        this.longestStreak = longestStreak;
     }
 
     public User()
@@ -100,5 +107,29 @@ public class User {
 
     public void setStarredPosts(ArrayList<String> starredPosts) {
         this.starredPosts = starredPosts;
+    }
+
+    public Date getLastVisit() {
+        return lastVisit;
+    }
+
+    public void setLastVisit(Date lastVisit) {
+        this.lastVisit = lastVisit;
+    }
+
+    public int getCurrentStreak() {
+        return currentStreak;
+    }
+
+    public void setCurrentStreak(int currentStreak) {
+        this.currentStreak = currentStreak;
+    }
+
+    public int getLongestStreak() {
+        return longestStreak;
+    }
+
+    public void setLongestStreak(int longestStreak) {
+        this.longestStreak = longestStreak;
     }
 }

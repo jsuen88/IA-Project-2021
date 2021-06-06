@@ -174,10 +174,10 @@ public class SpecificPostActivity extends AppCompatActivity {
                     Date date = post.getPostDate();
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(date);
-                    cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
-                    cal.set(Calendar.HOUR_OF_DAY, 7);
-                    cal.set(Calendar.MINUTE, 0);
-                    cal.set(Calendar.SECOND, 0);
+                    //cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
+                    //cal.set(Calendar.HOUR_OF_DAY, 7);
+                    //cal.set(Calendar.MINUTE, 0);
+                    //cal.set(Calendar.SECOND, 0);
                     date = cal.getTime();
                     post.setPostDate(date);
 

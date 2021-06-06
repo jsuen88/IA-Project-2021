@@ -207,7 +207,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             CCAPost post = new CCAPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, extraEdit2.getText().toString(), id, "awaiting");
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
-                                post.setApprovalStatus("Approved");
+                                post.setApprovalStatus("approved");
                                 Calendar cal = Calendar.getInstance();
                                 Date date = post.getPostDate();
                                 cal.setTime(date);
@@ -228,7 +228,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             ServicePost post = new ServicePost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), cantonese, extraEdit2.getText().toString(), id, "awaiting");
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
-                                post.setApprovalStatus("Approved");
+                                post.setApprovalStatus("approved");
                                 Calendar cal = Calendar.getInstance();
                                 Date date = post.getPostDate();
                                 cal.setTime(date);
@@ -252,7 +252,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             SportsPost post = new SportsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString(), id, "awaiting");
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
-                                post.setApprovalStatus("Approved");
+                                post.setApprovalStatus("approved");
                                 Calendar cal = Calendar.getInstance();
                                 Date date = post.getPostDate();
                                 cal.setTime(date);
@@ -275,7 +275,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             AcademicsPost post = new AcademicsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, id, "awaiting");
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
-                                post.setApprovalStatus("Approved");
+                                post.setApprovalStatus("approved");
                                 Calendar cal = Calendar.getInstance();
                                 Date date = post.getPostDate();
                                 cal.setTime(date);
@@ -292,7 +292,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             Post post = new Post(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), id, "awaiting");
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
-                                post.setApprovalStatus("Approved");
+                                post.setApprovalStatus("approved");
                                 Calendar cal = Calendar.getInstance();
                                 Date date = post.getPostDate();
                                 cal.setTime(date);
