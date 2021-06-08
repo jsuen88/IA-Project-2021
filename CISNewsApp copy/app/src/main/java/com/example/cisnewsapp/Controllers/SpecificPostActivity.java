@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.cisnewsapp.Models.Post;
 import com.example.cisnewsapp.Models.User;
@@ -17,8 +18,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Text;
 
@@ -45,6 +52,9 @@ public class SpecificPostActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
 
+    public StorageReference mStorageRef;
+    public DatabaseReference mDatabaseRef;
+
     private String title;
     private String author;
     private String category;
@@ -52,6 +62,7 @@ public class SpecificPostActivity extends AppCompatActivity {
     private String info;
     private String id;
     private String approvalStatus;
+    private String picURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +98,7 @@ public class SpecificPostActivity extends AppCompatActivity {
         info = getIntent().getStringExtra("info");
         id = getIntent().getStringExtra("id");
         approvalStatus = getIntent().getStringExtra("approval");
+        picURL = getIntent().getStringExtra("picURL");
 
         this.titleView.setText(title);
         this.authorView.setText("Author : " + author);
@@ -95,6 +107,7 @@ public class SpecificPostActivity extends AppCompatActivity {
         this.infoView.setText("Info : " + info);
 
         setUpButtons();
+        displayImage();
     }
 
     public void setUpButtons()
@@ -116,6 +129,29 @@ public class SpecificPostActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void displayImage()
+    {
+        System.out.println("test 2");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Upload upload = postSnapshot.getValue(Upload.class);
+                    System.out.println("test 1");
+                    if (upload.getImageURL().equals(picURL)) {
+                        System.out.println("found it");
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(SpecificPostActivity.this, "bruh", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     public void backToMain (View v) {
         Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
@@ -174,10 +210,10 @@ public class SpecificPostActivity extends AppCompatActivity {
                     Date date = post.getPostDate();
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(date);
-                    //cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
-                    //cal.set(Calendar.HOUR_OF_DAY, 7);
-                    //cal.set(Calendar.MINUTE, 0);
-                    //cal.set(Calendar.SECOND, 0);
+                    cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
+                    cal.set(Calendar.HOUR_OF_DAY, 7);
+                    cal.set(Calendar.MINUTE, 0);
+                    cal.set(Calendar.SECOND, 0);
                     date = cal.getTime();
                     post.setPostDate(date);
 

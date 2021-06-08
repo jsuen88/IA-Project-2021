@@ -12,8 +12,9 @@ public class Post {
     private Date lastsUntil;
     private String id;
     private String approvalStatus;
+    private String picURL;
 
-    public Post(String postName, String postCategory, String postCreator, String info, Date postDate, Date lastsUntil, String id, String approvalStatus) {
+    public Post(String postName, String postCategory, String postCreator, String info, Date postDate, Date lastsUntil, String id, String approvalStatus, String picURL) {
         this.postName = postName;
         this.postCategory = postCategory;
         this.postCreator = postCreator;
@@ -22,6 +23,7 @@ public class Post {
         this.lastsUntil = lastsUntil;
         this.id = id;
         this.approvalStatus = approvalStatus;
+        this.picURL = picURL;
     }
 
     public Post()
@@ -90,5 +92,13 @@ public class Post {
 
     public void setApprovalStatus(String approvalStatus) {
         this.approvalStatus = approvalStatus;
+    }
+
+    public String getPicURL() {
+        return picURL;
+    }
+
+    public void setPicURL(String picURL) {
+        this.picURL = picURL;
     }
 }

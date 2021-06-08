@@ -7,8 +7,8 @@ public class ServicePost extends Post {
     private boolean cantoneseRequired;
     private String targetDemographic;
 
-    public ServicePost(String postName, String postCategory, String postCreator, String info, Date postDate, Date lastsUntil, boolean cantoneseRequired, String targetDemographic, String id, String approvalStatus) {
-        super(postName, postCategory, postCreator, info, postDate, lastsUntil, id, approvalStatus);
+    public ServicePost(String postName, String postCategory, String postCreator, String info, Date postDate, Date lastsUntil, boolean cantoneseRequired, String targetDemographic, String id, String approvalStatus, String picURL) {
+        super(postName, postCategory, postCreator, info, postDate, lastsUntil, id, approvalStatus, picURL);
         this.cantoneseRequired = cantoneseRequired;
         this.targetDemographic = targetDemographic;
     }

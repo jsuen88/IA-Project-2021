@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.cisnewsapp">
+
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -18,6 +21,8 @@
             </intent-filter>
 
         </activity>
+        <activity android:name="androidx.multidex.MultiDexApplication"
+            tools:ignore="Instantiatable" />
         <activity android:name=".Controllers.MiscActivity" />
         <activity android:name=".Controllers.ServiceActivity" />
         <activity android:name=".Controllers.AcademicsActivity" />
@@ -26,9 +31,9 @@
         <activity android:name=".Controllers.NewPostActivity" />
         <activity android:name=".Controllers.SpecificPostActivity" />
         <activity android:name=".Controllers.ModActivity" />
-        <activity android:name=".Controllers.MainActivity">
+        <activity android:name=".Controllers.MainActivity"/>
 
-        </activity>
+        <receiver android:name=".Controllers.NotificationReceiver"/>
     </application>
 
 </manifest>

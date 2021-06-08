@@ -1,19 +1,24 @@
 package com.example.cisnewsapp.Controllers;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.DatePickerDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,11 +32,21 @@ import com.example.cisnewsapp.Models.SportsPost;
 import com.example.cisnewsapp.Models.User;
 import com.example.cisnewsapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.time.LocalDate;
@@ -39,8 +54,24 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
+import java.util.Random;
+
+import io.grpc.Context;
 
 public class NewPostActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener {
+
+    private static final int PICK_IMAGE_REQUEST = 1;
+    public Button chooseImage;
+    public Button uploadImage;
+    public ImageView imageView;
+    public EditText imageNameEdit;
+    public Uri imageUri;
+    public String picURL;
+
+    public StorageReference mStorageRef;
+    public DatabaseReference mDatabaseRef;
+
+    private StorageTask mUploadTask;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
@@ -68,6 +99,33 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
             }
         });
 
+        chooseImage = findViewById(R.id.chooseImage);
+        uploadImage = findViewById(R.id.uploadImage);
+        imageView = findViewById(R.id.imageView);
+        imageNameEdit = findViewById(R.id.imageNameEdit);
+
+        mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+
+        chooseImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFileChooser();
+            }
+        });
+
+        uploadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mUploadTask != null && mUploadTask.isInProgress()) {
+                    Toast.makeText(NewPostActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    uploadFile();
+                }
+            }
+        });
+
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
@@ -88,6 +146,67 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
         extraEdit1.setVisibility(View.GONE);
         extraEdit2.setVisibility(View.GONE);
         extraEdit3.setVisibility(View.INVISIBLE);
+    }
+
+    public void uploadFile()
+    {
+        if (imageUri != null) {
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+            + "." + getFileExtension(imageUri));
+
+            mUploadTask = fileReference.putFile(imageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(NewPostActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
+                            picURL = taskSnapshot.getTask().getResult().toString();
+                            Upload upload = new Upload(imageNameEdit.getText().toString().trim(), taskSnapshot.getTask().getResult().toString());
+                            String uploadId = mDatabaseRef.push().getKey();
+                            mDatabaseRef.child(uploadId).setValue(upload);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(NewPostActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+
+                        }
+                    });
+        }
+        else {
+            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public String getFileExtension(Uri uri) {
+        ContentResolver content = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(content.getType(uri));
+    }
+
+    public void openFileChooser()
+    {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            Picasso.with(this).load(imageUri).into(imageView);
+        }
     }
 
     @Override
@@ -204,7 +323,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             for (int i = 0; i < years.length; i++) {
                                 yearGroups.add(Integer.parseInt(years[i]));
                             }
-                            CCAPost post = new CCAPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, extraEdit2.getText().toString(), id, "awaiting");
+                            CCAPost post = new CCAPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, extraEdit2.getText().toString(), id, "awaiting", picURL);
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
                                 post.setApprovalStatus("approved");
@@ -215,8 +334,8 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                                 cal.set(Calendar.HOUR_OF_DAY, 7);
                                 cal.set(Calendar.MINUTE, 0);
                                 cal.set(Calendar.SECOND, 0);
-                                date = cal.getTime();
-                                post.setPostDate(date);
+                                //date = cal.getTime();
+                                //post.setPostDate(date);
                             }
                             firestore.collection("Posts").document(title).set(post);
                         }
@@ -225,7 +344,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             if (extraEdit1.getText().toString().equals("yes")) {
                                 cantonese = true;
                             }
-                            ServicePost post = new ServicePost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), cantonese, extraEdit2.getText().toString(), id, "awaiting");
+                            ServicePost post = new ServicePost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), cantonese, extraEdit2.getText().toString(), id, "awaiting", picURL);
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
                                 post.setApprovalStatus("approved");
@@ -249,7 +368,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                                 yearGroups.add(Integer.parseInt(years[i]));
                             }
 
-                            SportsPost post = new SportsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString(), id, "awaiting");
+                            SportsPost post = new SportsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString(), id, "awaiting", picURL);
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
                                 post.setApprovalStatus("approved");
@@ -272,7 +391,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                                 yearGroups.add(Integer.parseInt(years[i]));
                             }
 
-                            AcademicsPost post = new AcademicsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, id, "awaiting");
+                            AcademicsPost post = new AcademicsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, id, "awaiting", picURL);
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
                                 post.setApprovalStatus("approved");
@@ -289,7 +408,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Miscellaneous")) {
-                            Post post = new Post(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), id, "awaiting");
+                            Post post = new Post(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), id, "awaiting", picURL);
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
                                 post.setApprovalStatus("approved");

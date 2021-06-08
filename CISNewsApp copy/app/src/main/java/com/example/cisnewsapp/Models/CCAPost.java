@@ -8,8 +8,8 @@ public class CCAPost extends Post{
     ArrayList<Integer> yearGroups;
     private String day;
 
-    public CCAPost(String postName, String postCategory, String postCreator, String info, Date postDate, Date lastsUntil, ArrayList<Integer> yearGroups, String day, String id, String approvalStatus) {
-        super(postName, postCategory, postCreator, info, postDate, lastsUntil, id, approvalStatus);
+    public CCAPost(String postName, String postCategory, String postCreator, String info, Date postDate, Date lastsUntil, ArrayList<Integer> yearGroups, String day, String id, String approvalStatus, String picURL) {
+        super(postName, postCategory, postCreator, info, postDate, lastsUntil, id, approvalStatus, picURL);
         this.yearGroups = yearGroups;
         this.day = day;
     }

@@ -54,6 +54,7 @@ public class MainRecAdapter extends RecyclerView.Adapter<MainViewHolder> {
                 intent.putExtra("info", mData.get(position).getInfo());
                 intent.putExtra("id", mData.get(position).getId());
                 intent.putExtra("approval", mData.get(position).getApprovalStatus());
+                intent.putExtra("url", mData.get(position).getPicURL());
                 context.startActivity(intent);
             }
         });

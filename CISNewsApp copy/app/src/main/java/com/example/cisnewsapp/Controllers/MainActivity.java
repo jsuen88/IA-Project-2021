@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private Button adminButton;
     private TextView currentlyViewingText;
+    private TextView streakView;
+    private TextView highestStreakView;
     private ArrayList<Post> posts = new ArrayList<>();
     //MainRecAdapter adapt = new MainRecAdapter(posts, this);
     private MainRecAdapter adapt;
@@ -54,7 +58,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getAndPopulateData();
+
         updateStreak();
+
+        //calendar.set(Calendar.HOUR_OF_DAY, 17);
+        //calendar.set(Calendar.MINUTE, 37);
+        //calendar.set(Calendar.SECOND, 0);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.setAction("MY_NOTIFICATION_MESSAGE");
+        //PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        PendingIntent pendIntent = PendingIntent.getService(this, 0,
+                new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 17);
+        calendar.set(Calendar.MINUTE, 37);
+        calendar.set(Calendar.SECOND, 0);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendIntent);
 
         EditText editText = findViewById(R.id.searchBar);
         editText.addTextChangedListener(new TextWatcher() {
@@ -80,6 +100,8 @@ public class MainActivity extends AppCompatActivity {
         adminButton = findViewById(R.id.adminButton);
         adminButton.setVisibility(View.GONE);
         currentlyViewingText = findViewById(R.id.currentlyViewingText);
+        streakView = findViewById(R.id.streakView);
+        highestStreakView = findViewById(R.id.highestStreakView);
 
         FirebaseUser mUser = mAuth.getCurrentUser();
         firestore.collection("users").document(mUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -97,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     public void updateStreak()
@@ -130,11 +153,13 @@ public class MainActivity extends AppCompatActivity {
                     else if (!(cal.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH) &&
                             cal.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
                             cal.get(Calendar.MINUTE) == Calendar.getInstance().get(Calendar.MINUTE))) {
-                        streak = 0;
+                        streak = 1;
                         user.setCurrentStreak(streak);
                     }
                     user.setLastVisit(Calendar.getInstance().getTime());
                     firestore.collection("users").document(user.getUid()).set(user);
+                    streakView.setText("Daily streak: " + user.getCurrentStreak());
+                    highestStreakView.setText("Highest streak: " + user.getLongestStreak());
                 }
             }
         });
@@ -339,7 +364,22 @@ public class MainActivity extends AppCompatActivity {
         startActivity(nextScreen);
     }
 
-    public void goToHome (View v) {
+    public void goToHome (View v) throws InterruptedException {
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        firestore.collection("users").document(mUser.getUid()).get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot ds = task.getResult();
+                            User user = ds.toObject(User.class);
+                            user.setCurrentlyViewing("All");
+                            firestore.collection("users").document(user.getUid()).set(user);
+                        }
+                    }
+                });
+        currentlyViewing = "All";
+        Thread.sleep(2000);
         Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
         startActivity(nextScreen);
     }
