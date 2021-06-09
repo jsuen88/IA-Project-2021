@@ -159,11 +159,25 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Toast.makeText(NewPostActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
-                            picURL = taskSnapshot.getTask().getResult().toString();
-                            Upload upload = new Upload(imageNameEdit.getText().toString().trim(), taskSnapshot.getTask().getResult().toString());
-                            String uploadId = mDatabaseRef.push().getKey();
-                            mDatabaseRef.child(uploadId).setValue(upload);
+                            //picURL = taskSnapshot.getTask().getResult().toString();
+                            if (taskSnapshot.getMetadata() != null) {
+                                Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
+                                result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        picURL = uri.toString();
+                                        Upload upload = new Upload(imageNameEdit.getText().toString().trim(), picURL);
+                                        String uploadId = mDatabaseRef.push().getKey();
+                                        mDatabaseRef.child(uploadId).setValue(upload);
+                                    }
+                                });
+                            }
+                            //picURL = taskSnapshot.getStorage().getDownloadUrl().toString();
+                            //Upload upload = new Upload(imageNameEdit.getText().toString().trim(), picURL);
+                            //String uploadId = mDatabaseRef.push().getKey();
+                            //mDatabaseRef.child(uploadId).setValue(upload);
                         }
+
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override

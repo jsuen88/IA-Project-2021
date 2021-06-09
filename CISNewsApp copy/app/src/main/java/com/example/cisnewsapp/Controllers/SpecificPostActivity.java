@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.cisnewsapp.Models.Post;
 import com.example.cisnewsapp.Models.User;
 import com.example.cisnewsapp.R;
@@ -26,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -48,6 +51,7 @@ public class SpecificPostActivity extends AppCompatActivity {
     private Button rejectButton;
     private Button submitReject;
     private EditText rejectEditText;
+    private ImageView accessedImage;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
@@ -85,6 +89,7 @@ public class SpecificPostActivity extends AppCompatActivity {
         rejectButton = findViewById(R.id.rejectButton);
         rejectEditText = findViewById(R.id.rejectEditText);
         submitReject = findViewById(R.id.submitRejection);
+        accessedImage = findViewById(R.id.accessedImage);
 
         approveButton.setVisibility(View.INVISIBLE);
         rejectButton.setVisibility(View.INVISIBLE);
@@ -98,7 +103,7 @@ public class SpecificPostActivity extends AppCompatActivity {
         info = getIntent().getStringExtra("info");
         id = getIntent().getStringExtra("id");
         approvalStatus = getIntent().getStringExtra("approval");
-        picURL = getIntent().getStringExtra("picURL");
+        picURL = getIntent().getStringExtra("url");
 
         this.titleView.setText(title);
         this.authorView.setText("Author : " + author);
@@ -140,10 +145,23 @@ public class SpecificPostActivity extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Upload upload = postSnapshot.getValue(Upload.class);
                     System.out.println("test 1");
+                    System.out.println(upload.getImageURL());
+                    System.out.println(picURL);
                     if (upload.getImageURL().equals(picURL)) {
-                        System.out.println("found it");
+                        //System.out.println("found it");
+                        String bruh = upload.getImageURL() + "bruh";
+                        //Picasso.with(getApplicationContext()).load(upload.getImageURL()).into(accessedImage);
+                        //Picasso.with(getApplicationContext()).load(bruh).into(accessedImage);
+                        Glide.with(getApplicationContext())
+                                .load(upload.getImageURL())
+                                .into(accessedImage);
+                        System.out.println("shoulda worked by now");
+                        accessedImage.getLayoutParams().width = 250;
+                        accessedImage.getLayoutParams().height = 250;
+                        accessedImage.setAdjustViewBounds(true);
                     }
                 }
+                System.out.println("test 3");
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
