@@ -34,6 +34,7 @@
         <activity android:name=".Controllers.MainActivity"/>
 
         <receiver android:name=".Controllers.NotificationReceiver"/>
+
     </application>
 
 </manifest>
