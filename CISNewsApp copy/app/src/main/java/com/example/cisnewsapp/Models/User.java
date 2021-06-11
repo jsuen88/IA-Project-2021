@@ -1,10 +1,11 @@
 package com.example.cisnewsapp.Models;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class User {
+public class User implements Serializable {
     private String name;
     private String uid;
     private String userType;
@@ -17,8 +18,9 @@ public class User {
     Date lastVisit;
     int currentStreak;
     int longestStreak;
+    Date accountCreated;
 
-    public User(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, ArrayList<String> seenPosts, String currentlyViewing, ArrayList<String> starredPosts, Date lastVisit, int currentStreak, int longestStreak) {
+    public User(String name, String uid, String userType, String email, int numPosts, ArrayList<String> createdPosts, ArrayList<String> seenPosts, String currentlyViewing, ArrayList<String> starredPosts, Date lastVisit, int currentStreak, int longestStreak, Date accountCreated) {
         this.name = name;
         this.uid = uid;
         this.userType = userType;
@@ -31,6 +33,7 @@ public class User {
         this.lastVisit = lastVisit;
         this.currentStreak = currentStreak;
         this.longestStreak = longestStreak;
+        this.accountCreated = accountCreated;
     }
 
     public User()
@@ -131,5 +134,13 @@ public class User {
 
     public void setLongestStreak(int longestStreak) {
         this.longestStreak = longestStreak;
+    }
+
+    public Date getAccountCreated() {
+        return accountCreated;
+    }
+
+    public void setAccountCreated(Date accountCreated) {
+        this.accountCreated = accountCreated;
     }
 }

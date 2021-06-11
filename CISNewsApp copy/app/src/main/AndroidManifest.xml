@@ -12,16 +12,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Controllers.PostsDataAnalytics"></activity>
+        <activity android:name=".Controllers.UserDataAnalytics" />
+        <activity android:name=".Controllers.MainActivity2" />
+        <activity android:name=".Controllers.AppDataAnalytics" />
         <activity android:name=".Controllers.AuthActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-        <activity android:name="androidx.multidex.MultiDexApplication"
+        <activity
+            android:name="androidx.multidex.MultiDexApplication"
             tools:ignore="Instantiatable" />
         <activity android:name=".Controllers.MiscActivity" />
         <activity android:name=".Controllers.ServiceActivity" />
@@ -31,10 +34,9 @@
         <activity android:name=".Controllers.NewPostActivity" />
         <activity android:name=".Controllers.SpecificPostActivity" />
         <activity android:name=".Controllers.ModActivity" />
-        <activity android:name=".Controllers.MainActivity"/>
+        <activity android:name=".Controllers.MainActivity" />
 
-        <receiver android:name=".Controllers.NotificationReceiver"/>
-
+        <receiver android:name=".Controllers.NotificationReceiver" />
     </application>
 
 </manifest>

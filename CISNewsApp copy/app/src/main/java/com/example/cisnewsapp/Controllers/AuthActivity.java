@@ -3,6 +3,7 @@ package com.example.cisnewsapp.Controllers;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.cisnewsapp.Models.Admin;
 import com.example.cisnewsapp.Models.User;
 import com.example.cisnewsapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,6 +40,7 @@ public class AuthActivity extends AppCompatActivity implements AdapterView.OnIte
     public ArrayList<String> seenPosts = new ArrayList<>();
     public ArrayList<String> starredPosts = new ArrayList<>();
     private Spinner usersSpinner;
+    public Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,10 +143,22 @@ public class AuthActivity extends AppCompatActivity implements AdapterView.OnIte
                                 FirebaseUser mUser = mAuth.getCurrentUser();
 
                                 String userUID = mUser.getUid();
-
-                                User currentUser = new User(nameString, userUID,
-                                        usersSpinner.getSelectedItem().toString(), emailString, 0, posts, seenPosts, "All", starredPosts, Calendar.getInstance().getTime(), 1, 1);
-                                firestore.collection("users").document(userUID).set(currentUser);
+                                if (usersSpinner.getSelectedItem().toString().equals("Admin"))
+                                {
+                                    System.out.println("admin activated");
+                                    User currentUser = new Admin(nameString, userUID,
+                                            usersSpinner.getSelectedItem().toString(), emailString,
+                                            0, posts, seenPosts, "All", starredPosts,
+                                            Calendar.getInstance().getTime(), 1, 1, Calendar.getInstance().getTime(), 0, 0, 0);
+                                    firestore.collection("users").document(userUID).set(currentUser);
+                                }
+                                else if (usersSpinner.getSelectedItem().equals("Student")){
+                                    User currentUser = new User(nameString, userUID,
+                                            usersSpinner.getSelectedItem().toString(), emailString, 0, posts, seenPosts, "All", starredPosts, Calendar.getInstance().getTime(), 1, 1, Calendar.getInstance().getTime());
+                                    firestore.collection("users").document(userUID).set(currentUser);
+                                }
+                                //Intent intent = new Intent(AuthActivity.this, MainActivity.class);
+                                //intent.putExtra("role", usersSpinner.getSelectedItem().toString());
                                 updateUI(mUser);
                             }
                             else

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.cisnewsapp.Models.Admin;
 import com.example.cisnewsapp.Models.Post;
 import com.example.cisnewsapp.Models.User;
 import com.example.cisnewsapp.R;
@@ -67,6 +68,7 @@ public class SpecificPostActivity extends AppCompatActivity {
     private String id;
     private String approvalStatus;
     private String picURL;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,6 +219,7 @@ public class SpecificPostActivity extends AppCompatActivity {
     }
 
     public void approve(View v) {
+        FirebaseUser mUser = mAuth.getCurrentUser();
         firestore.collection("Posts").document(title).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -236,14 +239,29 @@ public class SpecificPostActivity extends AppCompatActivity {
                     post.setPostDate(date);
 
                     firestore.collection("Posts").document(title).set(post);
-                    Intent intent = new Intent(getBaseContext(), ModActivity.class);
-                    startActivity(intent);
+                }
+            }
+        });
+        firestore.collection("users").document(mUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot ds = task.getResult();
+                    Admin user = ds.toObject(Admin.class);
+                    int approved = user.getApprovedPosts();
+                    approved+=1;
+                    user.setApprovedPosts(approved);
+                    firestore.collection("users").document(user.getUid()).set(user);
+
+                    Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
+                    startActivity(nextScreen);
                 }
             }
         });
     }
 
     public void reject(View v) {
+        FirebaseUser mUser = mAuth.getCurrentUser();
         rejectEditText.setVisibility(View.VISIBLE);
         submitReject.setVisibility(View.VISIBLE);
         firestore.collection("Posts").document(title).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -256,6 +274,24 @@ public class SpecificPostActivity extends AppCompatActivity {
 
                     firestore.collection("Posts").document(title).set(post);
 
+                }
+            }
+        });
+        firestore.collection("users").document(mUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot ds = task.getResult();
+                    Admin admin = ds.toObject(Admin.class);
+                    int denied = admin.getDeniedPosts();
+                    denied+=1;
+                    System.out.println("new denied: " + denied);
+                    admin.setDeniedPosts(denied);
+                    System.out.println("stored denied: " + denied);
+                    firestore.collection("users").document(admin.getUid()).set(admin);
+
+                    Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
+                    startActivity(nextScreen);
                 }
             }
         });

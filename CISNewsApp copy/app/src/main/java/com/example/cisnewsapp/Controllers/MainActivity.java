@@ -21,7 +21,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.cisnewsapp.Models.Admin;
 import com.example.cisnewsapp.Models.Post;
+import com.example.cisnewsapp.Models.Student;
 import com.example.cisnewsapp.Models.User;
 import com.example.cisnewsapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     RecyclerView recView;
     String currentlyViewing;
+    private String role;
 
     ArrayList<String> seenPosts = new ArrayList<>();
     ArrayList<String> starredPosts = new ArrayList<>();
@@ -61,8 +64,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getAndPopulateData();
 
+        role = getIntent().getStringExtra("role");
+        System.out.println("ROLE: " + role);
+
+        getAndPopulateData();
         updateStreak();
 
         //calendar.set(Calendar.HOUR_OF_DAY, 17);
@@ -115,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot ds = task.getResult();
+
                     User user = ds.toObject(User.class);
                     if (String.valueOf(user.getUserType()).equals("Admin"))
                     {
@@ -157,37 +164,65 @@ public class MainActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot ds = task.getResult();
                     User user = ds.toObject(User.class);
-                    Date lastVisit = user.getLastVisit();
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(lastVisit);
-                    int streak = user.getCurrentStreak();
+                    if (user.getUserType().equals("Admin")) {
+                        Admin admin = ds.toObject(Admin.class);
+                        Date lastVisit = admin.getLastVisit();
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(lastVisit);
+                        int streak = admin.getCurrentStreak();
 
-                    System.out.println(cal.get((Calendar.MINUTE))+1);
-                    System.out.println(Calendar.getInstance().get(Calendar.MINUTE));
-                    if (cal.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH) &&
-                            cal.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
-                            cal.get(Calendar.MINUTE)+1 == Calendar.getInstance().get(Calendar.MINUTE)) {
-                        streak+=1;
-                        if (streak > user.getLongestStreak())
-                        {
-                            user.setLongestStreak(streak);
+                        if (cal.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH) &&
+                                cal.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                                cal.get(Calendar.MINUTE) + 1 == Calendar.getInstance().get(Calendar.MINUTE)) {
+                            streak += 1;
+                            if (streak > admin.getLongestStreak()) {
+                                admin.setLongestStreak(streak);
+                            }
+                            admin.setCurrentStreak(streak);
                         }
-                        user.setCurrentStreak(streak);
+                        else if (!(cal.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH) &&
+                                cal.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                                cal.get(Calendar.MINUTE) == Calendar.getInstance().get(Calendar.MINUTE))) {
+                            streak = 1;
+                            admin.setCurrentStreak(streak);
+                        }
+                        admin.setLastVisit(Calendar.getInstance().getTime());
+                        firestore.collection("users").document(admin.getUid()).set(admin);
+                        streakView.setText("Daily streak: " + admin.getCurrentStreak());
+                        highestStreakView.setText("Highest streak: " + admin.getLongestStreak());
                     }
-                    else if (!(cal.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH) &&
-                            cal.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
-                            cal.get(Calendar.MINUTE) == Calendar.getInstance().get(Calendar.MINUTE))) {
-                        streak = 1;
-                        user.setCurrentStreak(streak);
+                    else {
+                        Date lastVisit = user.getLastVisit();
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(lastVisit);
+                        int streak = user.getCurrentStreak();
+
+                        if (cal.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH) &&
+                                cal.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                                cal.get(Calendar.MINUTE) + 1 == Calendar.getInstance().get(Calendar.MINUTE)) {
+                            streak += 1;
+                            if (streak > user.getLongestStreak()) {
+                                user.setLongestStreak(streak);
+                            }
+                            user.setCurrentStreak(streak);
+                        }
+                        else if (!(cal.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH) &&
+                                cal.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                                cal.get(Calendar.MINUTE) == Calendar.getInstance().get(Calendar.MINUTE))) {
+                            streak = 1;
+                            user.setCurrentStreak(streak);
+                        }
+                        user.setLastVisit(Calendar.getInstance().getTime());
+                        firestore.collection("users").document(user.getUid()).set(user);
+                        streakView.setText("Daily streak: " + user.getCurrentStreak());
+                        highestStreakView.setText("Highest streak: " + user.getLongestStreak());
                     }
-                    user.setLastVisit(Calendar.getInstance().getTime());
-                    firestore.collection("users").document(user.getUid()).set(user);
-                    streakView.setText("Daily streak: " + user.getCurrentStreak());
-                    highestStreakView.setText("Highest streak: " + user.getLongestStreak());
                 }
+                //User user = ds.toObject(User.class);
             }
         });
     }
+
 
     public void filter(String text) {
         ArrayList<Post> filteredList = new ArrayList<>();
@@ -385,6 +420,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToAdmin (View v) {
         Intent nextScreen = new Intent(getBaseContext(), ModActivity.class);
+        startActivity(nextScreen);
+    }
+
+    public void goToAnalytics (View v) {
+        Intent nextScreen = new Intent(getBaseContext(), AppDataAnalytics.class);
         startActivity(nextScreen);
     }
 
