@@ -83,18 +83,25 @@ public class UserDataAnalytics extends AppCompatActivity {
                             switch (student.getYearGroup()) {
                                 case "Year 7":
                                     year7Count+=1;
+                                    break;
                                 case "Year 8":
                                     year8Count+=1;
+                                    break;
                                 case "Year 9":
                                     year9Count+=1;
+                                    break;
                                 case "Year 10":
                                     year10Count+=1;
+                                    break;
                                 case "Year 11":
                                     year11Count+=1;
+                                    break;
                                 case "Year 12":
                                     year12Count+=1;
+                                    break;
                                 case "Year 13":
                                     year13Count+=1;
+                                    break;
                             }
                         }
                         if (user.getUserType().equals("Teacher")) {
@@ -124,7 +131,7 @@ public class UserDataAnalytics extends AppCompatActivity {
                     teachersText.setText("Teachers " + teacherCount);
                     adminsText.setText("Admins: " + adminCount);
                     longestStreakCurrentText.setText("Longest current streak: " + longestStreakCurrent + " , held by " + longestStreakCurrentPerson);
-                    longestStreakCurrentText.setText("Longest current streak: " + longestStreakCurrent + " , held by " + longestStreakCurrentPerson);
+                    longestStreakEverText.setText("Longest ever streak: " + longestStreakEver + " , held by " + longestStreakEverPerson);
                 }
             }
         });

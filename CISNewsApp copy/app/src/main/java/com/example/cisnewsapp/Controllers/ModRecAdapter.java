@@ -13,7 +13,10 @@ import com.example.cisnewsapp.Models.Post;
 import com.example.cisnewsapp.R;
 
 import java.util.ArrayList;
-
+/**
+ * A class regarding the Adapter, which is necessary in the function of the recycler
+ * view.
+ */
 public class ModRecAdapter extends RecyclerView.Adapter<ModViewHolder>
 {
     ArrayList<Post> mData;

@@ -11,6 +11,12 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Calendar;
 
+/**
+ * Class used to store the date selected by the user from the date fragment.
+ *
+ * Author: Joson Suen
+ * Version: 1.0
+ */
 public class DatePicker extends DialogFragment {
 
     @NonNull

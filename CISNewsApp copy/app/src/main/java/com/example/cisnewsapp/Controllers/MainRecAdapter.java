@@ -11,14 +11,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cisnewsapp.Models.Post;
+import com.example.cisnewsapp.Models.User;
 import com.example.cisnewsapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-
+/**
+ * A class regarding the Adapter, which is necessary in the function of the recycler
+ * view.
+ */
 public class MainRecAdapter extends RecyclerView.Adapter<MainViewHolder> {
 
     ArrayList<Post> mData;
     private Context context;
+
 
     public MainRecAdapter(ArrayList data, Context context)
     {
@@ -43,6 +53,7 @@ public class MainRecAdapter extends RecyclerView.Adapter<MainViewHolder> {
         holder.titleText.setText("Post Title: " + mData.get(position).getPostName());
         holder.authorText.setText("Post Details: " + substring);
 
+
         holder.getLayout().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,6 +66,7 @@ public class MainRecAdapter extends RecyclerView.Adapter<MainViewHolder> {
                 intent.putExtra("id", mData.get(position).getId());
                 intent.putExtra("approval", mData.get(position).getApprovalStatus());
                 intent.putExtra("url", mData.get(position).getPicURL());
+                intent.putExtra("email", mData.get(position).getContactEmail());
                 context.startActivity(intent);
             }
         });

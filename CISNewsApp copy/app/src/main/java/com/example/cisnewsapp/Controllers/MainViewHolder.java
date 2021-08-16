@@ -8,7 +8,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cisnewsapp.R;
-
+/**
+ * A class controlling the Recycler View which shows all posts.
+ *
+ */
 public class MainViewHolder extends RecyclerView.ViewHolder {
 
     protected TextView titleText;

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,8 +14,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.cisnewsapp.Models.AcademicsPost;
 import com.example.cisnewsapp.Models.Admin;
+import com.example.cisnewsapp.Models.CCAPost;
+import com.example.cisnewsapp.Models.MiscPost;
 import com.example.cisnewsapp.Models.Post;
+import com.example.cisnewsapp.Models.ServicePost;
+import com.example.cisnewsapp.Models.SportsPost;
 import com.example.cisnewsapp.Models.User;
 import com.example.cisnewsapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,9 +31,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
@@ -44,6 +52,7 @@ public class SpecificPostActivity extends AppCompatActivity {
     private TextView categoryView;
     private TextView dateView;
     private TextView infoView;
+    private TextView emailView;
     private Button signOut;
     private Button goBack;
     private Button seenPost;
@@ -64,10 +73,12 @@ public class SpecificPostActivity extends AppCompatActivity {
     private String author;
     private String category;
     private String date;
+    private String email;
     private String info;
     private String id;
     private String approvalStatus;
     private String picURL;
+    private String recipient;
 
 
     @Override
@@ -83,6 +94,7 @@ public class SpecificPostActivity extends AppCompatActivity {
         categoryView = findViewById(R.id.categoryView);
         dateView = findViewById(R.id.dateView);
         infoView = findViewById(R.id.infoView);
+        emailView = findViewById(R.id.emailView);
         goBack = findViewById(R.id.goBack);
         signOut = findViewById(R.id.signOut);
         seenPost = findViewById(R.id.seenPost);
@@ -106,12 +118,15 @@ public class SpecificPostActivity extends AppCompatActivity {
         id = getIntent().getStringExtra("id");
         approvalStatus = getIntent().getStringExtra("approval");
         picURL = getIntent().getStringExtra("url");
+        email = getIntent().getStringExtra("email");
 
         this.titleView.setText(title);
         this.authorView.setText("Author : " + author);
         this.categoryView.setText("Category : " + category);
-        this.dateView.setText("Date : " + date);
+        //this.dateView.setText("Date : " + date);
         this.infoView.setText("Info : " + info);
+        this.emailView.setText("Contact email: " + email);
+        dateView.setVisibility(View.INVISIBLE);
 
         setUpButtons();
         displayImage();
@@ -139,31 +154,21 @@ public class SpecificPostActivity extends AppCompatActivity {
 
     public void displayImage()
     {
-        System.out.println("test 2");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Upload upload = postSnapshot.getValue(Upload.class);
-                    System.out.println("test 1");
-                    System.out.println(upload.getImageURL());
-                    System.out.println(picURL);
                     if (upload.getImageURL().equals(picURL)) {
-                        //System.out.println("found it");
-                        String bruh = upload.getImageURL() + "bruh";
-                        //Picasso.with(getApplicationContext()).load(upload.getImageURL()).into(accessedImage);
-                        //Picasso.with(getApplicationContext()).load(bruh).into(accessedImage);
                         Glide.with(getApplicationContext())
                                 .load(upload.getImageURL())
                                 .into(accessedImage);
-                        System.out.println("shoulda worked by now");
                         accessedImage.getLayoutParams().width = 250;
                         accessedImage.getLayoutParams().height = 250;
                         accessedImage.setAdjustViewBounds(true);
                     }
                 }
-                System.out.println("test 3");
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -224,21 +229,61 @@ public class SpecificPostActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
+                    Calendar cal = Calendar.getInstance();
                     DocumentSnapshot ds = task.getResult();
                     Post post = ds.toObject(Post.class);
-                    post.setApprovalStatus("approved");
-
-                    Date date = post.getPostDate();
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(date);
-                    cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
-                    cal.set(Calendar.HOUR_OF_DAY, 7);
-                    cal.set(Calendar.MINUTE, 0);
-                    cal.set(Calendar.SECOND, 0);
-                    date = cal.getTime();
-                    post.setPostDate(date);
-
-                    firestore.collection("Posts").document(title).set(post);
+                    if (post.getPostCategory().equals("CCA")) {
+                        CCAPost ccaPost = ds.toObject(CCAPost.class);
+                        ccaPost.setApprovalStatus("approved");
+                        Date date = ccaPost.getPostDate();
+                        cal.setTime(date);
+                        cal.set(Calendar.HOUR_OF_DAY, 7);
+                        cal.set(Calendar.MINUTE, 0);
+                        cal.set(Calendar.SECOND, 0);
+                        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
+                        date = cal.getTime();
+                        ccaPost.setPostDate(date);
+                        firestore.collection("Posts").document(title).set(ccaPost);
+                    }
+                    else if (post.getPostCategory().equals("Service")) {
+                        ServicePost servicePost = ds.toObject(ServicePost.class);
+                        Date date = servicePost.getPostDate();
+                        cal.setTime(date);
+                        cal.set(Calendar.HOUR_OF_DAY, 7);
+                        cal.set(Calendar.MINUTE, 0);
+                        cal.set(Calendar.SECOND, 0);
+                        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
+                        date = cal.getTime();
+                        servicePost.setPostDate(date);
+                        servicePost.setApprovalStatus("approved");
+                        firestore.collection("Posts").document(title).set(servicePost);
+                    }
+                    else if (post.getPostCategory().equals("Sports")) {
+                        SportsPost sportsPost = ds.toObject(SportsPost.class);
+                        Date date = sportsPost.getPostDate();
+                        cal.setTime(date);
+                        cal.set(Calendar.HOUR_OF_DAY, 7);
+                        cal.set(Calendar.MINUTE, 0);
+                        cal.set(Calendar.SECOND, 0);
+                        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
+                        date = cal.getTime();
+                        sportsPost.setPostDate(date);
+                        sportsPost.setApprovalStatus("approved");
+                        firestore.collection("Posts").document(title).set(sportsPost);
+                    }
+                    else if (post.getPostCategory().equals("Academics")) {
+                        AcademicsPost academicsPost = ds.toObject(AcademicsPost.class);
+                        Date date = academicsPost.getPostDate();
+                        cal.setTime(date);
+                        cal.set(Calendar.HOUR_OF_DAY, 7);
+                        cal.set(Calendar.MINUTE, 0);
+                        cal.set(Calendar.SECOND, 0);
+                        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)+1);
+                        date = cal.getTime();
+                        academicsPost.setPostDate(date);
+                        academicsPost.setApprovalStatus("approved");
+                        firestore.collection("Posts").document(title).set(academicsPost);
+                    }
                 }
             }
         });
@@ -253,8 +298,7 @@ public class SpecificPostActivity extends AppCompatActivity {
                     user.setApprovedPosts(approved);
                     firestore.collection("users").document(user.getUid()).set(user);
 
-                    Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
-                    startActivity(nextScreen);
+                    sendEmailApproved();
                 }
             }
         });
@@ -290,8 +334,61 @@ public class SpecificPostActivity extends AppCompatActivity {
                     System.out.println("stored denied: " + denied);
                     firestore.collection("users").document(admin.getUid()).set(admin);
 
-                    Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
-                    startActivity(nextScreen);
+                    //Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
+                    //startActivity(nextScreen);
+                }
+            }
+        });
+    }
+
+    public void sendEmailRejected(View v) {
+        firestore.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot ds : task.getResult().getDocuments()) {
+                        User user = ds.toObject(User.class);
+                        if (user.getName().equals(author)) {
+                            recipient = user.getEmail();
+                            String[] recipientList = new String[1];
+                            recipientList[0] = recipient;
+                            String subject = "Your post to CIS News has been rejected";
+                            String message = "Your post " + title + " has been rejected. Reason: " + rejectEditText.getText().toString();
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.putExtra(Intent.EXTRA_EMAIL, recipientList);
+                            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                            intent.putExtra(Intent.EXTRA_TEXT, message);
+                            intent.setType("message/rfc822");
+                            startActivity(Intent.createChooser(intent, "Choose an email client"));
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void sendEmailApproved() {
+        firestore.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot ds : task.getResult().getDocuments()) {
+                        User user = ds.toObject(User.class);
+                        if (user.getName().equals(author)) {
+                            String recipient = user.getEmail();
+                            String[] recipientList = new String[1];
+                            recipientList[0] = recipient;
+                            System.out.println(recipient);
+                            String subject = "Your post to CIS News has been approved";
+                            String message = "Your post " + title + " has been approved. It will be posted at 7am tomorrow. Log on to see it!";
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.putExtra(Intent.EXTRA_EMAIL, recipientList);
+                            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                            intent.putExtra(Intent.EXTRA_TEXT, message);
+                            intent.setType("message/rfc822");
+                            startActivity(Intent.createChooser(intent, "Choose an email client"));
+                        }
+                    }
                 }
             }
         });

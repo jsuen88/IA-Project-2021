@@ -26,11 +26,6 @@
         <activity
             android:name="androidx.multidex.MultiDexApplication"
             tools:ignore="Instantiatable" />
-        <activity android:name=".Controllers.MiscActivity" />
-        <activity android:name=".Controllers.ServiceActivity" />
-        <activity android:name=".Controllers.AcademicsActivity" />
-        <activity android:name=".Controllers.CCAActivity" />
-        <activity android:name=".Controllers.SportsActivity" />
         <activity android:name=".Controllers.NewPostActivity" />
         <activity android:name=".Controllers.SpecificPostActivity" />
         <activity android:name=".Controllers.ModActivity" />

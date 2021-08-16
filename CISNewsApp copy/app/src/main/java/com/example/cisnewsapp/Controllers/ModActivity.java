@@ -21,6 +21,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * This class is an activity which is only accessible by admin
+ * accounts. The page features a recycler view of pending posts,
+ * which the user can click on to be redirected to the SpecificPostActivity
+ * where they can see the post details as well as approve or reject it.
+ *
+ * Author: Joson Suen
+ * Version: 1.0
+ */
 public class ModActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -28,9 +37,7 @@ public class ModActivity extends AppCompatActivity {
 
     RecyclerView adminRecView;
     ArrayList<String> mData;
-
     ArrayList<Post> posts = new ArrayList<>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +50,13 @@ public class ModActivity extends AppCompatActivity {
         adminRecView = findViewById(R.id.adminRecView);
 
     }
-
+    /**
+     * Method that retrieves all posts from the database and processes
+     * them such that only posts with approval status of "awaiting" are
+     * displayed in the recycler view. Each post takes up one row of
+     * the recycler view.
+     *
+     */
     public void getAndPopulateData() {
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -63,7 +76,11 @@ public class ModActivity extends AppCompatActivity {
             }
         });
     }
-
+    /**
+     * Helper method that assists in displaying the recycler view.
+     *
+     * @param post: the current post
+     */
     public void help (ArrayList<Post> post)
     {
         adminRecView = findViewById(R.id.adminRecView);
@@ -72,7 +89,11 @@ public class ModActivity extends AppCompatActivity {
         adminRecView.setAdapter(adapt);
         adminRecView.setLayoutManager(new LinearLayoutManager(this));
     }
-
+    /**
+     * Method that directs the user back to the app's home page.
+     *
+     * @param v: the current view displayed to the user
+     */
     public void backMainButton (View v) {
         Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
         startActivity(nextScreen);

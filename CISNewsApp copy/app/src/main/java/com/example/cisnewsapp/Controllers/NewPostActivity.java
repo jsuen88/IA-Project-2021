@@ -58,6 +58,15 @@ import java.util.Random;
 
 import io.grpc.Context;
 
+/**
+ * An activity where the user can create and submit a post.
+ * Features several input boxes for title, description, and
+ * other traits as well as allowing the user to select a date
+ * and image.
+ *
+ * Author: Joson Suen
+ * Version: 1.0
+ */
 public class NewPostActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener {
 
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -147,7 +156,10 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
         extraEdit2.setVisibility(View.GONE);
         extraEdit3.setVisibility(View.INVISIBLE);
     }
-
+    /**
+     * Method that uploads the selected image file to the database.
+     *
+     */
     public void uploadFile()
     {
         if (imageUri != null) {
@@ -159,7 +171,6 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Toast.makeText(NewPostActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
-                            //picURL = taskSnapshot.getTask().getResult().toString();
                             if (taskSnapshot.getMetadata() != null) {
                                 Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
                                 result.addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -172,12 +183,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                                     }
                                 });
                             }
-                            //picURL = taskSnapshot.getStorage().getDownloadUrl().toString();
-                            //Upload upload = new Upload(imageNameEdit.getText().toString().trim(), picURL);
-                            //String uploadId = mDatabaseRef.push().getKey();
-                            //mDatabaseRef.child(uploadId).setValue(upload);
                         }
-
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -202,7 +208,12 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(content.getType(uri));
     }
-
+    /**
+     * Method that, when called, opens the file chooser where
+     * the user can then select the image they would like
+     * to upload.
+     *
+     */
     public void openFileChooser()
     {
         Intent intent = new Intent();
@@ -211,7 +222,14 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
 
     }
-
+    /**
+     * Method that helps to display the image on the screen once the user
+     * has selected it from the file chooser
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -220,9 +238,19 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                 && data != null && data.getData() != null) {
             imageUri = data.getData();
             Picasso.with(this).load(imageUri).into(imageView);
+            imageView.getLayoutParams().width = 250;
+            imageView.getLayoutParams().height = 250;
+            imageView.setAdjustViewBounds(true);
         }
     }
-
+    /**
+     * Method called when the user selects a date from the calendar fragment.
+     *
+     * @param view
+     * @param year
+     * @param month
+     * @param dayOfMonth
+     */
     @Override
     public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth)
     {
@@ -237,8 +265,13 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
         TextView dateView = (TextView) findViewById(R.id.dateView);
         dateView.setText(currentDateString);
     }
-
-
+    /**
+     * Helper method called within the inputValid() method that
+     * checks if the user's input for year groups is valid, returning
+     * either true or false depending on the result.
+     *
+     * @return boolean
+     */
     public boolean yearsValid()
     {
         for (char c : extraEdit1.getText().toString().toCharArray())
@@ -252,9 +285,19 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
         }
         return true;
     }
-
+    /**
+     * Helper method called when the user clicks on the submit post
+     * button which checks if all inputs have been filled in and
+     * that the input is valid.
+     *
+     * @return boolean
+     */
     public boolean inputValid()
     {
+        if (c == null) {
+            Toast.makeText(this, "Please enter a date", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         String postCategory = mySpinner.getSelectedItem().toString();
         if (postCategory.equals("CCA")) {
             if (extraEdit1.getText().toString().isEmpty() || editInfo.getText().toString().isEmpty() || editPostName.getText().toString().isEmpty() || extraEdit2.getText().toString().isEmpty()) {
@@ -311,7 +354,13 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
         }
         return true;
     }
-
+    /**
+     * Method called when user clicks on submit post button. If
+     * inputValid() returns true, then the post object is stored in
+     * Firebase and the user is redirected back to the home page.
+     *
+     * @param v: the current view displayed to the user
+     */
     public void addNewPost(View v)
     {
         FirebaseUser mUser = mAuth.getCurrentUser();
@@ -323,6 +372,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                     DocumentSnapshot ds = task.getResult();
                     User user = ds.toObject(User.class);
                     String owner = user.getName();
+                    String contactEmail = user.getEmail();
                     String title = editPostName.getText().toString();
                     String info = editInfo.getText().toString();
                     String postCategory = mySpinner.getSelectedItem().toString();
@@ -337,7 +387,9 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             for (int i = 0; i < years.length; i++) {
                                 yearGroups.add(Integer.parseInt(years[i]));
                             }
-                            CCAPost post = new CCAPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, extraEdit2.getText().toString(), id, "awaiting", picURL);
+                            CCAPost post = new CCAPost(title, postCategory, owner, info, Calendar.getInstance().getTime(),
+                                    c.getTime(), yearGroups, extraEdit2.getText().toString(), id,
+                                    "awaiting", picURL, contactEmail);
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
                                 post.setApprovalStatus("approved");
@@ -348,8 +400,8 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                                 cal.set(Calendar.HOUR_OF_DAY, 7);
                                 cal.set(Calendar.MINUTE, 0);
                                 cal.set(Calendar.SECOND, 0);
-                                //date = cal.getTime();
-                                //post.setPostDate(date);
+                                date = cal.getTime();
+                                post.setPostDate(date);
                             }
                             firestore.collection("Posts").document(title).set(post);
                         }
@@ -358,7 +410,9 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             if (extraEdit1.getText().toString().equals("yes")) {
                                 cantonese = true;
                             }
-                            ServicePost post = new ServicePost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), cantonese, extraEdit2.getText().toString(), id, "awaiting", picURL);
+                            ServicePost post = new ServicePost(title, postCategory, owner, info,
+                                    Calendar.getInstance().getTime(), c.getTime(), cantonese, extraEdit2.getText().toString(),
+                                    id, "awaiting", picURL, extraEdit3.getText().toString(), contactEmail);
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
                                 post.setApprovalStatus("approved");
@@ -382,7 +436,9 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                                 yearGroups.add(Integer.parseInt(years[i]));
                             }
 
-                            SportsPost post = new SportsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString(), id, "awaiting", picURL);
+                            SportsPost post = new SportsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(),
+                                    c.getTime(), yearGroups, extraEdit2.getText().toString(), extraEdit3.getText().toString(),
+                                    id, "awaiting", picURL, contactEmail);
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
                                 post.setApprovalStatus("approved");
@@ -405,7 +461,9 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                                 yearGroups.add(Integer.parseInt(years[i]));
                             }
 
-                            AcademicsPost post = new AcademicsPost(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), yearGroups, id, "awaiting", picURL);
+                            AcademicsPost post = new AcademicsPost(title, postCategory, owner, info,
+                                    Calendar.getInstance().getTime(), c.getTime(), yearGroups, id,
+                                    "awaiting", picURL, contactEmail);
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
                                 post.setApprovalStatus("approved");
@@ -422,7 +480,9 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                             firestore.collection("Posts").document(title).set(post);
                         }
                         if (postCategory.equals("Miscellaneous")) {
-                            Post post = new Post(title, postCategory, owner, info, Calendar.getInstance().getTime(), c.getTime(), id, "awaiting", picURL);
+                            Post post = new Post(title, postCategory, owner, info,
+                                    Calendar.getInstance().getTime(), c.getTime(), id,
+                                    "awaiting", picURL, contactEmail);
                             if (user.getUserType().equals("Admin") || user.getUserType().equals("Teacher"))
                             {
                                 post.setApprovalStatus("approved");
@@ -450,7 +510,15 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
             }
         });
     }
-
+    /**
+     * Method called when an item is selected from the post
+     * categories spinner.
+     *
+     * @param adapterView
+     * @param view
+     * @param i
+     * @param l
+     */
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         String text = adapterView.getItemAtPosition(i).toString();
@@ -469,7 +537,8 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
             extraEdit1.setHint("Is cantonese required (yes/no): ");
             extraEdit2.setVisibility(View.VISIBLE);
             extraEdit2.setHint("Enter target demographic: ");
-            extraEdit3.setVisibility(View.INVISIBLE);
+            extraEdit3.setVisibility(View.VISIBLE);
+            extraEdit3.setHint("Enter day: ");
         }
         if (postCategory.equals("Sports")) {
             extraEdit1.setVisibility(View.VISIBLE);
@@ -491,19 +560,35 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
             extraEdit3.setVisibility(View.INVISIBLE);
         }
     }
-
+    /**
+     * Method called if no item is selected from the
+     * post categories spinner
+     *
+     * @param adapterView
+     */
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
         extraEdit1.setVisibility(View.INVISIBLE);
         extraEdit2.setVisibility(View.GONE);
         extraEdit3.setVisibility(View.INVISIBLE);
     }
-
+    /**
+     * Method called if the user clicks on the "cancel" button.
+     * Redirects the user back to the home page.
+     *
+     * @param v: the current view displayed to the user
+     */
     public void cancel (View v) {
         Intent nextScreen = new Intent(getBaseContext(), MainActivity.class);
         startActivity(nextScreen);
     }
 
+    /**
+     * Method called if the user clicks on the "sign out" button.
+     * Redirects the user back to the user authentication page.
+     *
+     * @param v: the current view displayed to the user
+     */
     public void signOut (View v)
     {
         mAuth.signOut();

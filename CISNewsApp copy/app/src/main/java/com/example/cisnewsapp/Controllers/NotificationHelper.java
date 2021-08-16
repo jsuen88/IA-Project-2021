@@ -38,8 +38,8 @@ public class NotificationHelper extends ContextWrapper {
 
     public NotificationCompat.Builder getChannelNotification() {
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
-                .setContentTitle("Alarm!")
-                .setContentText("Your AlarmManager is working.")
+                .setContentTitle("CIS News App")
+                .setContentText("New posts have been released!")
                 .setSmallIcon(R.drawable.ic_test);
     }
 }

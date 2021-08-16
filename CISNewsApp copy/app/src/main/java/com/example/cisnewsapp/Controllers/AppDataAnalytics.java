@@ -25,6 +25,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Class that retrieves data from a database and processes it in order to show statistics regarding
+ * users and posts. Contains buttons that direct the user to other activities
+ *
+ * Author: Joson Suen
+ * Version: 1.0
+ */
 public class AppDataAnalytics extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -56,6 +63,10 @@ public class AppDataAnalytics extends AppCompatActivity {
         setUpPostsAnalytics();
     }
 
+    /**
+     * retrieves data from the database and sets Textviews to show statistics about users of the app
+     *
+     */
     public void setUpUserAnalytics() {
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -95,6 +106,10 @@ public class AppDataAnalytics extends AppCompatActivity {
         });
     }
 
+    /**
+     * retrieves data from the database and sets TextViews to show statistics about posts in the app
+     *
+     */
     public void setUpPostsAnalytics() {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
@@ -128,22 +143,27 @@ public class AppDataAnalytics extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot ds = task.getResult();
                     Admin user = ds.toObject(Admin.class);
-                    System.out.println("bruh1 " + user.getApprovedPosts());
-                    System.out.println("bruh2 " + user.getDeniedPosts());
-                    System.out.println(user.getAccountCreated());
                     postView3.setText("Posts you've processed: " + (user.getApprovedPosts() + user.getDeniedPosts()));
-                    //postView3.setText("Posts you've processed: " + user.getEmail());
                 }
             }
         });
     }
 
-
+    /**
+     * directs user to UserAnalyticsActivity
+     *
+     * @param v: view
+     */
     public void goToUserAnalytics(View v) {
         Intent nextScreen = new Intent(getBaseContext(), UserDataAnalytics.class);
         startActivity(nextScreen);
     }
 
+    /**
+     * directs user to PostAnalyticsActivity
+     *
+     * @param v: view
+     */
     public void goToPostsAnalytics(View v) {
         Intent nextScreen = new Intent(getBaseContext(), PostsDataAnalytics.class);
         startActivity(nextScreen);
