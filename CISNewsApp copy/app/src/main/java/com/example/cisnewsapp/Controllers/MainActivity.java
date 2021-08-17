@@ -218,31 +218,32 @@ public class MainActivity extends AppCompatActivity {
                         streakView.setText("Daily streak: " + student.getCurrentStreak());
                         highestStreakView.setText("Highest streak: " + student.getLongestStreak());
                     }
-                    else {
+                    else if (user.getUserType().equals("Teacher")) {
+                        Teacher teacher = ds.toObject(Teacher.class);
                         Date lastVisit = user.getLastVisit();
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(lastVisit);
-                        int streak = user.getCurrentStreak();
+                        int streak = teacher.getCurrentStreak();
 
                         if (cal.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH) &&
                                 cal.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
                                 cal.get(Calendar.MINUTE) + 1 == Calendar.getInstance().get(Calendar.MINUTE)) {
                             streak += 1;
-                            if (streak > user.getLongestStreak()) {
-                                user.setLongestStreak(streak);
+                            if (streak > teacher.getLongestStreak()) {
+                                teacher.setLongestStreak(streak);
                             }
-                            user.setCurrentStreak(streak);
+                            teacher.setCurrentStreak(streak);
                         }
                         else if (!(cal.get(Calendar.MONTH) == Calendar.getInstance().get(Calendar.MONTH) &&
                                 cal.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
                                 cal.get(Calendar.MINUTE) == Calendar.getInstance().get(Calendar.MINUTE))) {
                             streak = 1;
-                            user.setCurrentStreak(streak);
+                            teacher.setCurrentStreak(streak);
                         }
-                        user.setLastVisit(Calendar.getInstance().getTime());
-                        firestore.collection("users").document(user.getUid()).set(user);
-                        streakView.setText("Daily streak: " + user.getCurrentStreak());
-                        highestStreakView.setText("Highest streak: " + user.getLongestStreak());
+                        teacher.setLastVisit(Calendar.getInstance().getTime());
+                        firestore.collection("users").document(user.getUid()).set(teacher);
+                        streakView.setText("Daily streak: " + teacher.getCurrentStreak());
+                        highestStreakView.setText("Highest streak: " + teacher.getLongestStreak());
                     }
                 }
             }

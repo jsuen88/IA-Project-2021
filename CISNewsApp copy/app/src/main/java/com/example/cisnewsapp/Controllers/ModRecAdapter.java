@@ -58,6 +58,8 @@ public class ModRecAdapter extends RecyclerView.Adapter<ModViewHolder>
                 intent.putExtra("info", mData.get(position).getInfo());
                 intent.putExtra("id", mData.get(position).getId());
                 intent.putExtra("approval", mData.get(position).getApprovalStatus());
+                intent.putExtra("url", mData.get(position).getPicURL());
+                intent.putExtra("email", mData.get(position).getContactEmail());
                 context.startActivity(intent);
             }
         });

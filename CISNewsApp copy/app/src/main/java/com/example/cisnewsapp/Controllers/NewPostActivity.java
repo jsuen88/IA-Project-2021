@@ -24,11 +24,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cisnewsapp.Models.AcademicsPost;
+import com.example.cisnewsapp.Models.Admin;
 import com.example.cisnewsapp.Models.CCAPost;
 import com.example.cisnewsapp.Models.MiscPost;
 import com.example.cisnewsapp.Models.Post;
 import com.example.cisnewsapp.Models.ServicePost;
 import com.example.cisnewsapp.Models.SportsPost;
+import com.example.cisnewsapp.Models.Student;
+import com.example.cisnewsapp.Models.Teacher;
 import com.example.cisnewsapp.Models.User;
 import com.example.cisnewsapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -500,8 +503,21 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                         }
                         ArrayList<String> createdPosts = user.getCreatedPosts();
                         createdPosts.add(title);
-                        user.setCreatedPosts(createdPosts);
-                        firestore.collection("users").document(user.getUid()).set(user);
+                        if (user.getUserType().equals("Student")) {
+                            User student = ds.toObject(Student.class);
+                            user.setCreatedPosts(createdPosts);
+                            firestore.collection("users").document(student.getUid()).set(student);
+                        }
+                        if (user.getUserType().equals("Admin")) {
+                            User admin = ds.toObject(Admin.class);
+                            user.setCreatedPosts(createdPosts);
+                            firestore.collection("users").document(admin.getUid()).set(admin);
+                        }
+                        if (user.getUserType().equals("Teacher")) {
+                            User teacher = ds.toObject(Teacher.class);
+                            user.setCreatedPosts(createdPosts);
+                            firestore.collection("users").document(teacher.getUid()).set(teacher);
+                        }
 
                         Intent intent = new Intent(getBaseContext(), MainActivity.class);
                         startActivity(intent);

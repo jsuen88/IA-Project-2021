@@ -6,6 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".Controllers.AuthActivity">
 
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="160dp"
+        android:fontFamily="monospace"
+        android:text="CIS News App"
+        android:textColor="#CD0A0A"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="114dp"
+        android:layout_height="104dp"
+        android:layout_marginTop="28dp"
+        android:src="@drawable/c_full"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/editEmail"
         android:layout_width="wrap_content"
@@ -40,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="103dp"
         android:layout_marginLeft="103dp"
-        android:layout_marginTop="650dp"
+        android:layout_marginTop="640dp"
         android:background="#EC3B3B"
         android:onClick="signIn"
         android:text="sign in"
@@ -51,7 +76,7 @@
         android:id="@+id/signUpButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="650dp"
+        android:layout_marginTop="640dp"
         android:layout_marginEnd="103dp"
         android:layout_marginRight="103dp"
         android:background="#EC3B3B"
