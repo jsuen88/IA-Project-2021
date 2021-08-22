@@ -83,10 +83,12 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent pendIntent = PendingIntent.getService(this, 0,
                 new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 7);
-        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(Calendar.MINUTE, 23);
         calendar.set(Calendar.SECOND, 0);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendIntent);
+        //alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendIntent);
+
         startAlarm(calendar);
 
         EditText editText = findViewById(R.id.searchBar);
@@ -146,7 +148,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, NotificationReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
 
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+        //alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
     }
     /**
      * Method called in onCreate of this class, which updates the user's

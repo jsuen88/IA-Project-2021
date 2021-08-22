@@ -123,9 +123,9 @@ public class SpecificPostActivity extends AppCompatActivity {
         this.titleView.setText(title);
         this.authorView.setText("Author : " + author);
         this.categoryView.setText("Category : " + category);
-        //this.dateView.setText("Date : " + date);
         this.infoView.setText("Info : " + info);
         this.emailView.setText("Contact email: " + email);
+        //this.dateView.setText("Date : " + date);
         dateView.setVisibility(View.INVISIBLE);
 
         setUpButtons();

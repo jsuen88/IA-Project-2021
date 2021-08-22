@@ -262,12 +262,16 @@ public class PostsDataAnalytics extends AppCompatActivity {
 
                     popularSport.setText("The most popular sport is: " + maximum.getKey() + " with " + maximum.getValue() + " posts");
                     frequentCCADay.setText("Most frequent day for CCAs: " + popularCCADay.getKey() + " with " + popularCCADay.getValue() + " CCAs");
+                    if (popularServiceDay.equals(null))
+                    {
+                        frequentServiceDay.setText("Currently no service posts");
+                    }
                     if (popularServiceDay.getValue().equals(1)) {
-                        frequentServiceDay.setText("Most frequent day for Sports: " + popularServiceDay.getKey() + " with " + popularServiceDay.getValue() + " service");
+                        frequentServiceDay.setText("Most frequent day for service: " + popularServiceDay.getKey() + " with " + popularServiceDay.getValue() + " service");
 
                     }
                     else {
-                        frequentServiceDay.setText("Most frequent day for Sports: " + popularServiceDay.getKey() + " with " + popularServiceDay.getValue() + " services");
+                        frequentServiceDay.setText("Most frequent day for service: " + popularServiceDay.getKey() + " with " + popularServiceDay.getValue() + " services");
 
                     }
 
